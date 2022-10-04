@@ -1,0 +1,29 @@
+<div>
+  <div>
+    <video
+      #videoPlayer
+      controls
+      controlslist="nodownload nofullscreen noremoteplayback"
+      width="100%"
+      (click)="playPause()"
+      (timeupdate)="timeUpdate($event)"
+    >
+      <source
+        src="https://www.w3schools.com/html/mov_bbb.mp4"
+        type="video/mp4"
+      />
+      Your browser does not support HTML video.
+    </video>
+  </div>
+  <div>
+    <button class="btn btn-primary mx-1" (click)="rewind()"><<</button>
+    <select [(ngModel)]="timeToJump">
+      <option [ngValue]="5">5</option>
+      <option [ngValue]="10">10</option>
+      <option [ngValue]="20">20</option>
+      <option [ngValue]="30">30</option>
+      <option [ngValue]="60">60</option>
+    </select>
+    <button class="btn btn-primary mx-1" (click)="forward()">>></button>
+  </div>
+</div>
