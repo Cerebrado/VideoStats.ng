@@ -10,7 +10,6 @@ import {
 @Component({
   selector: 'app-court',
   templateUrl: './court.component.html',
-  styleUrls: ['./court.component.css'],
 })
 export class CourtComponent implements OnInit {
   constructor(private cdr: ChangeDetectorRef) {}

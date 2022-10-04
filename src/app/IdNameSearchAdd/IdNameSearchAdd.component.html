@@ -1,0 +1,16 @@
+<div>
+  <span>
+    <label>{{title}}</label>
+    <input  
+      type="text" 
+      [(ngModel)]="searchModel" 
+      (ngModelChange)="onModelChange($event)"
+      [inputFormatter]="formatter"
+      [resultFormatter]="formatter"
+      [ngbTypeahead]="search" 
+      (selectItem)="onSelectItem($event)"/>
+      <button class="btn btn-primary" (click)="add()">+</button>
+  </span>
+</div>
+
+<pre>Model: {{ searchModel | json }}</pre>

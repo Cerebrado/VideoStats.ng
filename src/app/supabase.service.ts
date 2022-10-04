@@ -31,13 +31,7 @@ export class SupabaseService {
   // }
 
   signIn(email: string, password: string) {
-      this.db.auth.signIn({ email, password })
-      .then((response) => {
-        response.error ? alert(response.error.message) : this.setToken(response)
-      })
-      .catch((err) => {
-        alert(err.response.text)
-      })
+      return this.db.auth.signIn({ email, password })
   }
 
   accessToken;
