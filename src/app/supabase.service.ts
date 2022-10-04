@@ -26,9 +26,9 @@ export class SupabaseService {
     return this.db.auth.session();
   }
 
-  signUp(email: string, password: string) {
-    return this.db.auth.signUp({ email, password });
-  }
+  // signUp(email: string, password: string) {
+  //   return this.db.auth.signUp({ email, password });
+  // }
 
   signIn(email: string, password: string) {
       this.db.auth.signIn({ email, password })
@@ -53,9 +53,9 @@ export class SupabaseService {
     }
   }
 
-  signInWithProvider(provider: Provider) {
-    return this.db.auth.signIn({ provider });
-  }
+  // signInWithProvider(provider: Provider) {
+  //   return this.db.auth.signIn({ provider });
+  // }
 
   signOut() {
     this.db.auth.signOut().catch(console.error);
@@ -72,7 +72,7 @@ export class SupabaseService {
   }
 
   setNewPassword(newPassword: string) {
-    return this.db.auth.update({ password: "newPassword"});
+    return this.db.auth.update({ password: newPassword});
   }
 
 }

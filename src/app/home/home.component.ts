@@ -7,10 +7,11 @@ import { SupabaseService } from '../supabase.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-  constructor(public readonly supaService: SupabaseService) {
+  constructor(public readonly supaService: SupabaseService) {}
 
+  signOut(){
+    this.supaService.signOut();
   }
-
   videoTime = 0;
   videoTimeChanged(e: number) {
     this.videoTime = e;
