@@ -1,0 +1,59 @@
+
+<div class="container-fluid mx-1">
+  <div class="row mt-2">
+    <div class="col-4">
+      <p class="input-group">
+        <label class="input-group-text">Sport: </label>
+        <select class="form-control" [ngModel]="selectedSportId" (ngModelChange)="onSportChanged($event)">
+          <option *ngFor="let s of sports" [ngValue]="s.sportId">{{s.name}}</option>
+        </select>
+      </p>
+    </div>
+    <div class="col-4">
+      <p class="input-group">
+        <label class="input-group-text">Tournament: </label>
+        <select class="form-control" [ngModel]="selectedTournamentId" (ngModelChange)="onTournamentChanged($event)">
+          <option value="0">All</option>
+          <option *ngFor="let t of tournaments" [ngValue]="t.tournamentId">{{t.name}}</option>
+        </select>
+      </p>
+    </div>
+    <div class="col-4">
+      <p class="input-group">
+        <label class="input-group-text">Stats Type: </label>
+        <select class="form-control" [ngModel]="statType" (ngModelChange)="onStatsTypeChanged($event)">
+          <option value="byPlayer">by Player</option>
+          <option value="byEvent">by Event</option>
+        </select>
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4">
+      <p class="input-group">
+        <label class="input-group-text">Group by: </label>
+        <select class="form-control" [ngModel]="groupBy" (ngModelChange)="onGroupByChanged($event)">
+          <option value="19">Match</option>
+          <option value="10">Day</option>
+          <option value="7">Month</option>
+          <option value="4">Year</option>
+        </select>
+      </p>
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div class="col-6">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 col-xl-6" *ngFor="let kv of EventByMatchesWithPlayersCount | keyvalue">
+        <event-history-chart 
+            [EventName]="kv.key"
+            [MatchesWithPlayersCount]="kv.value"
+        ></event-history-chart>
+    </div>
+    
+  </div>
+</div>
+

@@ -1,0 +1,110 @@
+
+<h3>Settings</h3>
+<div class="m-2" style="display:flex; width:100%">
+  <div class="mr-1" style="resize: horizontal; overflow: auto;width:50%">
+    <form class="d-flex flex-row align-items-center flex-wrap">
+      <label class="my-1 me-2">Sport: &nbsp;</label> 
+      <button
+        class="btn btn-outline-primary btn-sm my-1 me-2"
+        type="button"
+        (click)="addSport()"><span class="material-icons">add</span>
+      </button>
+      <select class="form-select w-auto"  [ngModel]="selectedSport" (ngModelChange)="selectSport($event)">
+        <option *ngFor="let s of sports" [ngValue]="s">{{s.name}}</option>
+      </select>
+      <button 
+        class="btn btn-outline-danger btn-sm my-1 me-2"
+        (click)="deleteSport()"><span class="material-icons pull-right">close</span>
+      </button>
+    </form>
+  </div>
+  <div class="ml-1" style="flex-grow: 1;">
+    <form class="d-flex flex-row align-items-center flex-wrap">
+      <label>Tournament: &nbsp;</label>
+      <button
+        class="btn btn-outline-primary ml-2 btn-sm"
+        type="button"
+        (click)="addPlace()"
+        ><span class="material-icons">add</span>
+      </button>
+      <select class="form-select w-auto" [ngModel]="selectedPlace">
+        <option *ngFor="let t of places" [ngValue]="t">{{t.name}}</option>
+      </select>
+      <button 
+        class="btn btn-outline-danger btn-sm"
+        (click)="deletePlace()">
+        <span class="material-icons pull-right">close</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<div class="m-2" style="display:flex; width:100%">
+  <div class="mr-1" style="resize: horizontal; overflow: auto;width:50%">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-3">
+            <h5 class="card-title float-left"><span>Events</span></h5>
+          </div>
+          <div class="col-auto">
+            <button
+            class="btn btn-outline-primary btn-sm "
+            type="button"
+            (click)="addEvent()"><span class="material-icons">add</span>
+            </button>
+          </div>
+        </div>
+        <div  style="height:50vh; overflow-y:scroll">
+          <table class="table table-sm">
+            <tr style="cursor: pointer" *ngFor="let e of events; let i = index">
+              <td width="30%">{{ e.name }}</td>
+              <td width="5%">{{ e.balance }}</td>
+              <td>
+                <a href="#" (click)="deleteEvent(i)">
+                  <span class="material-icons pull-right">close</span>
+                </a>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ml-1" style="flex-grow: 1;">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-3">
+            <h5 class="card-title float-left"><span>Players</span></h5>
+          </div>
+          <div class="col-auto">
+            <input type="text" class="form-control" [(ngModel)]="newPlayer" />
+          </div>
+          <div class="col-auto">
+            <button
+            class="btn btn-outline-primary btn-sm "
+            type="button"
+            (click)="addPlayer()"><span class="material-icons">add</span>
+            </button>
+          </div>
+        </div>
+        <div  style="height:50vh; overflow-y:scroll">
+          <table class="table table-sm">
+            <tr
+              style="cursor: pointer"
+              *ngFor="let p of players; let i = index"
+            >
+              <td width="90%">{{ p.name }}</td>
+              <td>
+                <a href="#" (click)="deletePlayer(i)">
+                  <span class="material-icons pull-right">close</span>
+                </a>
+              </td>
+            </tr>
+          </table>
+        </div> 
+      </div>
+    </div>
+  </div>
+</div>
