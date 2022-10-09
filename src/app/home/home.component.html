@@ -1,13 +1,13 @@
 <nav class="navbar bg-light">
   <div class="container-fluid">
+    <a class="btn btn-outline-success" type="button" href="/new">
+      <span class="material-icons">note_add</span>
+    </a>
     <a class="navbar-brand">
       <label *ngIf="currentMatch == null">No active match</label>   
     </a>
     <a class="navbar-brand">
       <label *ngIf="currentMatch != null">{{currentMatch.sport.name}} - {{currentMatch.place.name}} - {{currentMatch.date}} </label>   
-    </a>
-    <a class="btn btn-outline-success" type="button" href="/new">
-      <span class="material-icons">note_add</span>
     </a>
     <a class="btn btn-outline-success" type="button" href="/stats">
       <span class="material-icons">leaderboard</span>
