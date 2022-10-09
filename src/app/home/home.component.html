@@ -1,9 +1,15 @@
 <nav class="navbar bg-light">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/">Work</a>
-    <a class="navbar-brand" href="/">New</a>
-    <label *ngIf="currentMatch == null">No active match</label>   
-    <a class="navbar-brand" href="/settings">Settings</a>
+    <a class="navbar-brand btn btn-outline-success" type="button">
+      <label *ngIf="currentMatch == null">No active match</label>   
+    </a>
+    
+    <a class="btn btn-outline-success" type="button" href="/settings">
+      <span class="material-icons">settings</span>
+    </a>
+    <a class="btn btn-outline-success" type="button" href="/stats">
+      <span class="material-icons">leaderboard</span>
+    </a>
     <p>
       {{supaService.getSession().user.email}}
       <svg (click)="signOut()" role="button"
@@ -20,7 +26,7 @@
     <app-video (timeChanged)="videoTimeChanged($event)"></app-video>
   </div>
   <div class="ml-1" style="flex-grow: 1;">
-    PLAYERS
+    <i class="material-icons">face</i> Players
   </div>
 </div>
 <div class="m-2" style="display:flex; width:100%">

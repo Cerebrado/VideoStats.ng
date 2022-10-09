@@ -20,7 +20,7 @@ import { SupabaseClient } from '@supabase/supabase-js'
 export class SettingsComponent implements OnInit {
 
   sports: Sport[]=[]
-  events: SportEvent[] =[]
+  // events: SportEvent[] =[]
   places: Place[]=[]
   players: Player[]=[]
 
@@ -41,18 +41,6 @@ export class SettingsComponent implements OnInit {
     await this.getPlaces();
   }
 
-  async getPlaces() {
-    let {data, error} = await this.DB.from('Places').select('*');
-    if(error){
-      alert('Cannot get Places, check console') 
-      console.log(error)
-      return;
-    }
-    this.places = data;
-    if(this.places.length > 0)
-    this.selectedPlace = this.places[0]
-  }
-
   async getSports() {
     let {data, error} = await this.DB.from('Sports')
     .select(`*, Events(*)`)
@@ -70,11 +58,11 @@ export class SettingsComponent implements OnInit {
 
   selectSport(sport:Sport){
     this.selectedSport = sport
-    if(sport != null){
-      this.events = sport.SportEvents
-    } else {
-      this.events = [] 
-    }
+    // if(sport != null){
+    //   this.events = sport.SportEvents
+    // } else {
+    //   this.events = [] 
+    // }
   }
 
   async addSport(){
@@ -118,6 +106,18 @@ export class SettingsComponent implements OnInit {
     else
       this.selectSport(this.sports[idx]) //removed any other
   }     
+
+  async getPlaces() {
+    let {data, error} = await this.DB.from('Places').select('*');
+    if(error){
+      alert('Cannot get Places, check console') 
+      console.log(error)
+      return;
+    }
+    this.places = data;
+    if(this.places.length > 0)
+    this.selectedPlace = this.places[0]
+  }
 
   async addPlace(){
     const modal = this.modalService.open(InputBoxComponent)
@@ -174,21 +174,21 @@ export class SettingsComponent implements OnInit {
         console.log(error)
         return;
       }
-      this.events.push(data);
+      this.selectedSport.SportEvents.push(data);
     })
   }
 
   async deleteEvent(idx: number){
     if(!confirm('You will delete the event and statistics associated. Continue?'))
       return;
-    const event = this.events[idx];
+    const event = this.selectedSport.SportEvents[idx];
     let {data, error} = await  this.DB.from('Events').delete().eq('eventId', event.eventId)
     if(error){
       alert('Cannot delete event, check console') 
       console.log(error)
       return;
     }
-    this.events.splice(idx, 1);
+    this.selectedSport.SportEvents.splice(idx, 1);
   }
 
   async addPlayer(){
@@ -221,6 +221,6 @@ export class SettingsComponent implements OnInit {
       console.log(error)
       return;
     }
-    this.events.splice(idx, 1);
+    this.players.splice(idx, 1);
   }
 }
