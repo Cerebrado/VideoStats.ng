@@ -14,8 +14,8 @@ import { PasswordSetComponent } from './passwordSet/passwordSet.component';
 
 
 import { NewEventComponent } from './new-event/new-event.component';
-import { NewMatchComponent } from './newMatch/newMatch.component';
 import { InputBoxComponent } from './input-box/input-box.component';
+import { NewMatchComponent } from './new-match/new-match.component';
   
 @NgModule({
   imports: [BrowserModule, FormsModule, NgbModule, AppRoutingModule],

@@ -15,15 +15,23 @@ export class HomeComponent implements OnInit {
   activeId = 0
     
   async ngOnInit(){
-    let {data:  activeMatch}  = await this.supaService.db
-    .from('Matches, Sports.name, Places.name')
+    let {data:  activeMatch, error}  = await this.supaService.db
+    .from('Matches')
     .select(`*, 
-      sports(name),
-      places(name)
+      sport: Sports(name),
+      place: Places(name)
     `)
     .eq('active', true)
     .single()
     
+    if(error){
+      if(error){
+        alert('Cannot get active match, check console') 
+        console.log(error)
+        return;
+      }
+    }
+
     if(activeMatch != null){
       debugger;
       this.currentMatch = activeMatch

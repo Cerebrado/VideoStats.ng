@@ -1,8 +1,17 @@
+import { Place } from "./place"
+import { Player } from "./player"
+import { Sport } from "./sport"
+import { SportEvent } from "./sportEvent"
+
 export type Match = {
     sportId: number
-    sportName: string
+    sport?: Sport,
     placeId: number
-    placeName: string
-    date: Date;
+    place?: Place,
+    date: Date,
+    user_id: string,
+    active: boolean,
+    players: Player[],
+    events: SportEvent[]
   }
   

@@ -1,6 +1,6 @@
 export type SportEvent = {
-  sportId: string
-  eventId: string
+  sportId: number
+  eventId: number
   name: string
   balance: boolean | null
 }

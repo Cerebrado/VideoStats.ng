@@ -4,7 +4,7 @@ import { AppComponent } from './app.component';
 import { AuthGuard } from './auth.guard';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
-import { NewMatchComponent } from './newMatch/newMatch.component';
+import { NewMatchComponent } from './new-match/new-match.component';
 import { PasswordSetComponent } from './passwordSet/passwordSet.component';
 import { SettingsComponent } from './settings/settings.component';
 
@@ -29,7 +29,7 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'newMatch',
+    path: 'new',
     component: NewMatchComponent,
     canActivate: [AuthGuard]
   }

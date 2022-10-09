@@ -20,7 +20,6 @@ import { SupabaseClient } from '@supabase/supabase-js'
 export class SettingsComponent implements OnInit {
 
   sports: Sport[]=[]
-  // events: SportEvent[] =[]
   places: Place[]=[]
   players: Player[]=[]
 
@@ -39,35 +38,21 @@ export class SettingsComponent implements OnInit {
   async ngOnInit() {
     await this.getSports();
     await this.getPlaces();
+    await this.getPlayers();
   }
 
   async getSports() {
-    let {data, error} = await this.DB.from('Sports')
-    .select(`*, Events(*)`)
-    
-    if(error){
-      alert('Cannot get Sports, check console') 
-      console.log(error)
-      return;
-    }
-    this.sports=data;
+    this.sports = await this.supaSvc.getMany('Sports',`*, SportEvents: Events(*)`);
     if(this.sports.length > 0)
-      this.selectSport(this.sports[0])
+      this.selectedSport =this.sports[0]
   }
 
 
-  selectSport(sport:Sport){
-    this.selectedSport = sport
-    // if(sport != null){
-    //   this.events = sport.SportEvents
-    // } else {
-    //   this.events = [] 
-    // }
-  }
 
   async addSport(){
     const modal = this.modalService.open(InputBoxComponent)
-    modal.componentInstance.label = "Add Sport"
+    modal.componentInstance.label = "Add"
+    modal.componentInstance.title = "Sport"
     modal.result
       .then(async (result:string) => {
         let {data, error} = await this.DB.from('Sports').insert({name: result, user_id: this.user_id}).single()
@@ -78,7 +63,7 @@ export class SettingsComponent implements OnInit {
         }
         data.Events  = []
         this.sports.push(data);
-        this.selectSport(data);
+        this.selectedSport = data;
       })
   }
 
@@ -97,31 +82,27 @@ export class SettingsComponent implements OnInit {
     }
 
     let idx = this.sports.findIndex(x=>x.sportId === this.selectedSport.sportId)
-    this.sports.splice(idx, 1);
 
     if(this.sports.length == 1) //removed the only one
-      this.selectSport(null)
-    else if (idx == this.sports.length ) //removed the last one
-      this.selectSport(this.sports[idx-1])
+      this.selectedSport = null
+    else if (idx == this.sports.length -1 ) //removed the last one
+      this.selectedSport = this.sports[idx-1]
     else
-      this.selectSport(this.sports[idx]) //removed any other
+      this.selectedSport = this.sports[idx] //removed any other
+
+    this.sports.splice(idx, 1);
   }     
 
   async getPlaces() {
-    let {data, error} = await this.DB.from('Places').select('*');
-    if(error){
-      alert('Cannot get Places, check console') 
-      console.log(error)
-      return;
-    }
-    this.places = data;
+    this.places = await this.supaSvc.getMany('Places', '*')
     if(this.places.length > 0)
-    this.selectedPlace = this.places[0]
+      this.selectedPlace = this.places[0]
   }
 
   async addPlace(){
     const modal = this.modalService.open(InputBoxComponent)
-    modal.componentInstance.label = "Add Place"
+    modal.componentInstance.label = "Add"
+    modal.componentInstance.title = "Place"
     modal.result
       .then(async (result:string) => {
         let {data, error} = await this.DB.from('Places').insert({name: result, user_id: this.user_id}).single()
@@ -161,14 +142,15 @@ export class SettingsComponent implements OnInit {
 
 
   addEvent(){
-    if(this.selectedPlace == null)
+    if(this.selectedSport == null)
       return
 
     const modal = this.modalService.open(NewEventComponent)
     modal.componentInstance.sportId = this.selectedSport.sportId
+    
     modal.result
       .then(async (result:SportEvent) => {
-      let {data, error} = await this.DB.from('Events').insert({sportId: result.sportId,  name: result.name, balance: result.balance, user_id: this.user_id}).single()
+      let {data, error} = await this.DB.from('Events').insert({sportId: this.selectedSport.sportId,  name: result.name, balance: result.balance, user_id: this.user_id}).single()
       if(error){
         alert('Cannot insert event, check console') 
         console.log(error)
@@ -177,6 +159,8 @@ export class SettingsComponent implements OnInit {
       this.selectedSport.SportEvents.push(data);
     })
   }
+
+
 
   async deleteEvent(idx: number){
     if(!confirm('You will delete the event and statistics associated. Continue?'))
@@ -189,6 +173,10 @@ export class SettingsComponent implements OnInit {
       return;
     }
     this.selectedSport.SportEvents.splice(idx, 1);
+  }
+
+  async getPlayers() {
+    this.players = await this.supaSvc.getMany('Players', '*')
   }
 
   async addPlayer(){

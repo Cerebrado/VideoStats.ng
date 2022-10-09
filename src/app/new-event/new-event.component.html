@@ -1,30 +1,32 @@
-<div class="modal-header">
-  <h5 class="modal-title">New Event</h5>
-  <button type="button" class="close" (click)="activeModal.dismiss()" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<div class="modal-body">
-  <div class="input-group input-group-sm mb-3">
-    <label>Short: &nbsp;</label>
-    <input [(ngModel)]="name" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
-  </div>    
-</div>    
-<div class="input-group input-group-sm mb-3">
-  <label>Value: &nbsp;</label>
-  <select [(ngModel)]="balance" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-    <option value="-1">-</option>
-    <option value="0" selected>0</option>
-    <option value="1">+</option>
-  </select>
-</div>    
-<div class="modal-footer">
-  <button type="button" 
-  class="btn btn-primary"
-  (click)="btnSaveNewEventClick()">Guardar</button>
-  
-  <button type="button" 
-  class="btn btn-secondary"
-  (click)="activeModal.dismiss()" 
-  data-dismiss="modal">Cancelar</button>
-</div>
+    <div class="modal-header">
+      <h5 class="modal-title">New Event</h5>
+      <button type="button" class="close" (click)="activeModal.dismiss()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="container-fluid">
+        <div class="row input-group input-group-sm mb-3">
+          <span class="input-group-text">Name: </span>
+          <input [(ngModel)]="name" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+        </div>
+        <div class="row input-group input-group-sm mb-3">
+          <span class="input-group-text">Balance: </span>
+          <select [(ngModel)]="balance" class="form-control form-select" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <option value="-1">-</option>
+            <option value="0" selected>0</option>
+            <option value="1">+</option>
+          </select>
+        </div>
+      </div>
+    </div>    
+    <div class="modal-footer">
+      <button type="button" 
+      class="btn btn-primary"
+      (click)="btnSaveNewEventClick()">Guardar</button>
+      
+      <button type="button" 
+      class="btn btn-secondary"
+      (click)="activeModal.dismiss()" 
+      data-dismiss="modal">Cancelar</button>
+    </div>

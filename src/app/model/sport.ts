@@ -1,7 +1,7 @@
 import { SportEvent } from "./sportEvent"
 
 export type Sport = {
-    sportId: string
+    sportId: number
     name: string
     SportEvents: SportEvent[]
   }

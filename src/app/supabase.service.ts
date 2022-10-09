@@ -7,6 +7,7 @@ import {
   SupabaseClient,
 } from '@supabase/supabase-js';
 import { environment } from './environment';
+import { Sport } from './model/sport';
 
 @Injectable({
   providedIn: 'root',
@@ -68,5 +69,35 @@ export class SupabaseService {
   setNewPassword(newPassword: string) {
     return this.db.auth.update({ password: newPassword});
   }
+
+  buildQuery(table:string, select:string, eq: {column, value} = null){
+    let q = this.db.from(table).select(select);
+    if(eq){
+      q = q.eq(eq.column, eq.value);
+    }
+    return q;
+  }
+
+  async getMany(table:string, select:string, eq: {column, value} = null){
+    const q = this.buildQuery(table, select, eq)
+    let {data, error} = await q;
+    if(error){
+      alert(`Cannot recover ${table}, check console`) 
+      console.log(error)
+    }
+    return data ?? [];
+  }
+
+  async getOne(table:string, select:string, eq:{column, value}=null){
+    const q = this.buildQuery(table, select, eq)
+    let {data, error} = await q.single()
+    if(error){
+      alert(`Cannot recover ${table}, check console`) 
+      console.log(error)
+    }
+    return data ?? [];
+  }
+
+
 
 }
