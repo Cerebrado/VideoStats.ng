@@ -48,7 +48,6 @@ export class HomeComponent implements OnInit {
     const div = document.getElementById('videoDiv');
     const config = { attributes: true, childList: true, subtree: true };
     const observer = new MutationObserver((mutation) => {
-      console.log("div style changed");
       observer.disconnect();
       this.video.resizeVideo();
       observer.observe(div, config);

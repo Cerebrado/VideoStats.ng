@@ -1,7 +1,6 @@
-<div>
-  <div>
+  <div style="position:relative">
     <video 
-    id="video"
+      id="video"
       style="width:100%;"
       (onresize)="resizeVideo()"
       #videoPlayer
@@ -15,12 +14,13 @@
       />
       Your browser does not support HTML video.
     </video>
-    <canvas  style="border:2px solid red; left:0;top:0;" 
+    <canvas  style="border:1px solid red; position:absolute;" 
       #canvas 
       (mousemove)="draw($event)" 
       (mousedown)="setPosition($event)" 
       (mouseenter)="setPosition($event)"
-      (mouseleave)="mouseLeave()">
+      (mouseleave)="mouseLeave()" 
+      >
     </canvas>
 
   </div>
@@ -38,4 +38,5 @@
     <button class="btn btn-secondary mx-1" (click)="forward()"><span class="material-icons">fast_forward</span></button>
     <button class="btn mx-1" [ngClass]="isPlaying ? 'btn-dark': 'btn-success'" (click)="playPause()"><span class="material-icons">{{isPlaying ? 'stop': 'play_arrow'}}</span> </button>
   </div>
-</div>
+
+  {{bitmapPos | json}}

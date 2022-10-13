@@ -17,20 +17,21 @@ export class VideoComponent implements AfterViewInit{
   videoPlayer: HTMLVideoElement;
   @ViewChild('videoPlayer')
   set mainVideoEl(el: ElementRef) {
-    console.log('video viewchild')
     this.videoPlayer = el.nativeElement;
   }
   timeToJump=5;
   isPlaying: boolean = false
 
   canvas: HTMLCanvasElement
+  
 
   @ViewChild('canvas')
   set mainCanvasEl(el: ElementRef) {
-    console.log('canvas viewchild')
     this.canvas = el.nativeElement;
   }
-  canvasPos = {x:0, y:0}
+  bitmapPos = {x:0, y:0}
+  canvasControlPos = {x:0, y:0}
+  
   ctx: CanvasRenderingContext2D;
   mouseIsInCanvas: boolean = false
 
@@ -41,9 +42,33 @@ export class VideoComponent implements AfterViewInit{
 
   ngAfterViewInit(): void {
     this.ctx = this.canvas.getContext('2d')
+    this.canvas.style.left = this.videoPlayer.clientLeft.toString()
+    this.canvas.style.top = this.videoPlayer.clientTop.toString()
+    this.canvasControlPos = this.GetScreenCordinates(this.canvas);
+    this.videoPlayer.oncanplay = (e) => this.canplay()
+  }
+
+  canplay(){
+    console.log("OKOK")
     this.resizeVideo();
   }
 
+  GetScreenCordinates(obj) {
+    var p = {x: 0, y: 0};
+    p.x = obj.offsetLeft;
+    p.y = obj.offsetTop;
+    while (obj.offsetParent) {
+        p.x = p.x + obj.offsetParent.offsetLeft;
+        p.y = p.y + obj.offsetParent.offsetTop;
+        if (obj == document.getElementsByTagName("body")[0]) {
+            break;
+        }
+        else {
+            obj = obj.offsetParent;
+        }
+    }
+    return p;
+}
   load(){
 
   }
@@ -75,38 +100,27 @@ export class VideoComponent implements AfterViewInit{
 
   @Output() timeChanged = new EventEmitter<any>();
   timeUpdate(data) {
-    //console.log(data.target.currentTime);
     this.timeChanged.emit(data.target.currentTime);
   }
 
   resizeVideo() {
 
-    //this.canvas.setAttribute('width', this.videoPlayer.getAttribute('width'))
-    //this.canvas.setAttribute('height', this.videoPlayer.getAttribute('heigt'))
+    const imgD =this.ctx.getImageData(0, 0, this.canvas.width - 1, this.canvas.height - 1); 
 
-    //  this.canvas.width = this.videoPlayer.width;
-    //  this.canvas.height = this.videoPlayer.height;
+    this.canvas.width = this.videoPlayer.clientWidth
+    this.canvas.height = this.videoPlayer.clientHeight
 
-     //const imgD =this.ctx.getImageData(0, 0, this.canvas.width - 1, this.canvas.height - 1); 
-
-     //this resizes the canvas, but not the bitmap
-    //  this.canvas.style.width = this.videoPlayer.style.width;
-    //   this.canvas.style.height = this.videoPlayer.style.height;
-
-      this.canvas.width = this.videoPlayer.clientWidth-10;
-      this.canvas.height = this.videoPlayer.clientHeight-10;
-
-      //this.ctx.putImageData(imgD, 0, 0);
-      console.log(`W:${this.canvas.width} SW:${this.canvas.style.width} CW:${this.canvas.clientWidth}`)
+    this.ctx.putImageData(imgD, 0, 0);
+    //console.log(`V:${this.videoPlayer.clientLeft} C:${this.canvas.clientLeft}`)
   }
 
   setPosition(e) {
     this.mouseIsInCanvas = true;
-    this.canvasPos.x = e.clientX - this.canvas.offsetLeft;
-    this.canvasPos.y = e.clientY - this.canvas.offsetTop;
+    this.bitmapPos.x = e.clientX - this.canvasControlPos.x
+    this.bitmapPos.y = e.clientY - this.canvasControlPos.y; 
 
-    //this.canvasPos.x = e.clientX;
-    //this.canvasPos.y = e.clientY;
+    //console.log(`e.clientX: ${e.clientX}  - this.canvas.offsetLeft: ${this.canvas.offsetLeft} - this.canvasControlPos.x: ${this.canvasControlPos.x}`)
+
   }
   
   mouseLeave(){
@@ -120,7 +134,7 @@ export class VideoComponent implements AfterViewInit{
 
   draw(e) {
     // mouse left button must be pressed
-    //if ((!this.mouseIsInCanvas) || e.buttons !== 1 ) return;
+    if ((!this.mouseIsInCanvas) || e.buttons !== 1 ) return;
   
     this.ctx.beginPath(); // begin
 
@@ -128,9 +142,9 @@ export class VideoComponent implements AfterViewInit{
     this.ctx.lineCap = 'round';
     this.ctx.strokeStyle = '#c0392b';
   
-    this.ctx.moveTo(this.canvasPos.x, this.canvasPos.y); // from
+    this.ctx.moveTo(this.bitmapPos.x, this.bitmapPos.y); // from
     this.setPosition(e);
-    this.ctx.lineTo(this.canvasPos.x, this.canvasPos.y); // to
+    this.ctx.lineTo(this.bitmapPos.x, this.bitmapPos.y); // to
   
     this.ctx.stroke(); // draw it!
   }
