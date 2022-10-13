@@ -1,11 +1,12 @@
 <div>
   <div>
-    <video
+    <video 
+    id="video"
+      style="width:100%;"
+      (onresize)="resizeVideo()"
       #videoPlayer
       controls
       controlslist="nodownload nofullscreen noremoteplayback"
-      width="100%"
-      (click)="playPause()"
       (timeupdate)="timeUpdate($event)"
     >
       <source
@@ -14,9 +15,19 @@
       />
       Your browser does not support HTML video.
     </video>
+    <canvas  style="border:2px solid red; left:0;top:0;" 
+      #canvas 
+      (mousemove)="draw($event)" 
+      (mousedown)="setPosition($event)" 
+      (mouseenter)="setPosition($event)"
+      (mouseleave)="mouseLeave()">
+    </canvas>
+
   </div>
   <div>
-    <button class="btn btn-primary mx-1" (click)="rewind()"><<</button>
+
+    <button class="btn btn-primary mx-1" (click)="load()"><span class="material-icons">movie</span></button>
+    <button class="btn btn-secondary mx-1" (click)="rewind()"><span class="material-icons">fast_rewind</span></button>
     <select [(ngModel)]="timeToJump">
       <option [ngValue]="5">5</option>
       <option [ngValue]="10">10</option>
@@ -24,6 +35,7 @@
       <option [ngValue]="30">30</option>
       <option [ngValue]="60">60</option>
     </select>
-    <button class="btn btn-primary mx-1" (click)="forward()">>></button>
+    <button class="btn btn-secondary mx-1" (click)="forward()"><span class="material-icons">fast_forward</span></button>
+    <button class="btn mx-1" [ngClass]="isPlaying ? 'btn-dark': 'btn-success'" (click)="playPause()"><span class="material-icons">{{isPlaying ? 'stop': 'play_arrow'}}</span> </button>
   </div>
 </div>

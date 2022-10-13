@@ -6,6 +6,8 @@ import { Player } from '../model/player';
 import { Sport } from '../model/sport';
 import { Place } from '../model/place';
 import { SupabaseService } from '../supabase.service';
+import { Router } from '@angular/router';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'new-match',
   templateUrl: './new-match.component.html',
@@ -18,13 +20,14 @@ export class NewMatchComponent {
   players: Player[]=[];
   
   selectedSport: Sport | null
-  selectedPlace: Place | null;
+  selectedPlace: Place | null
+  matchDate: NgbDateStruct
   matchPlayers: Player[] = []
-  newPlayer:string = '';
+  newPlayer:string = ''
 
   user_id: string
   DB: SupabaseClient
-  constructor(private supaSvc: SupabaseService) { 
+  constructor(private supaSvc: SupabaseService, private router: Router) { 
     this.DB = supaSvc.db;
     this.user_id = supaSvc.getSession()?.user?.id as string
 
@@ -73,13 +76,6 @@ export class NewMatchComponent {
     this.newPlayer = ''
   }
 
-  //   deletePlayer(player:Player) {
-  //   if(confirm('You will delete the player and statistics associated. Continue?'))
-  //   {
-  //     this.players = this.DB.removePlayer(player);
-  //   }
-  // }
-
   confirmPlayer(p: Player) {
     if(this.matchPlayers.some(x=>x.playerId == p.playerId)){
       alert(p.name + ' ya fue agregado y no puede jugar por dos. No es tan bueno.')
@@ -108,7 +104,7 @@ export class NewMatchComponent {
     }
 
     const newMatch: Match = {
-      date: new Date(),
+      date: this.matchDate.toString(),
       sportId: this.selectedSport.sportId,
       placeId: this.selectedPlace.placeId,
       active: true,
@@ -124,6 +120,33 @@ export class NewMatchComponent {
     if(error){
       alert('Cannot create match, check console') 
       console.log(error)
+      return
     }
+
+    this.router.navigate(['/'])
+
   }
+
+  // private pad2(n: number) {
+  //   return n < 10 ? '0' + n : n;
+  // }
+
+  // getDateAsString():string {
+  //   const date= new Date();
+  //   return (
+  //     date.getFullYear().toString() +
+  //     '-' +
+  //     this.pad2(date.getMonth() + 1) +
+  //     '-' +
+  //     this.pad2(date.getDate()) +
+  //     ' ' +
+  //     this.pad2(date.getHours()) +
+  //     ':' +
+  //     this.pad2(date.getMinutes()) +
+  //     ':' +
+  //     this.pad2(date.getSeconds()));
+  //   }
 }
+
+
+

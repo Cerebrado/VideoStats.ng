@@ -51,7 +51,7 @@
           <table class="table table-sm">
             <tr style="cursor: pointer" *ngFor="let e of selectedSport?.SportEvents; let i = index">
 
-              <td width="95%">({{ e.balance == true? "+": (e.balance == false? "-" : 0) }}) {{ e.name }}</td>
+              <td width="95%">({{ e.balance == 1? "+": (e.balance == -1? "-" : 0) }}) {{ e.name }}</td>
               <td>
                 <button class="btn btn-outline-danger btn-sm mx-4" (click)="deleteEvent(i)">
                   <span class="material-icons pull-right">close</span>

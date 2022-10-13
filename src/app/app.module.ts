@@ -16,10 +16,11 @@ import { PasswordSetComponent } from './passwordSet/passwordSet.component';
 import { NewEventComponent } from './new-event/new-event.component';
 import { InputBoxComponent } from './input-box/input-box.component';
 import { NewMatchComponent } from './new-match/new-match.component';
+import { MatchPlayersComponent } from './match-players/match-players.component';
   
 @NgModule({
   imports: [BrowserModule, FormsModule, NgbModule, AppRoutingModule],
-  declarations: [						
+  declarations: [							
     AppComponent,
     VideoComponent,
     CourtComponent,
@@ -29,7 +30,8 @@ import { NewMatchComponent } from './new-match/new-match.component';
     InputBoxComponent,
     NewEventComponent,
     SettingsComponent,
-    NewMatchComponent
+    NewMatchComponent,
+      MatchPlayersComponent
    ],
   bootstrap: [AppComponent],
 })

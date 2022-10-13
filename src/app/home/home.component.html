@@ -4,11 +4,11 @@
       <span class="material-icons">note_add</span>
     </a>
     <a class="navbar-brand">
-      <label *ngIf="currentMatch == null">No active match</label>   
+      <label *ngIf="activeMatch == null">No active match</label>   
     </a>
-    <a class="navbar-brand">
-      <label *ngIf="currentMatch != null">{{currentMatch.sport.name}} - {{currentMatch.place.name}} - {{currentMatch.date}} </label>   
-    </a>
+    <h4 class="navbar-brand">
+      <label *ngIf="activeMatch != null">{{activeMatch.sport.name}} - {{activeMatch.place.name}} - {{activeMatch.date}} </label>   
+    </h4>
     <a class="btn btn-outline-success" type="button" href="/stats">
       <span class="material-icons">leaderboard</span>
     </a>
@@ -27,11 +27,11 @@
 </nav>
 
 <div class="m-2" style="display:flex; width:100%">
-  <div class="mr-1" style="resize: horizontal; overflow: auto;width:50%">
+  <div class="mr-1" style="resize: horizontal; overflow: auto;width:50%" id="videoDiv" #videoDiv>
     <app-video (timeChanged)="videoTimeChanged($event)"></app-video>
   </div>
   <div class="ml-1" style="flex-grow: 1;">
-    <i class="material-icons">face</i> Players
+    <app-match-players [activeMatch]="activeMatch" [videoTime]="videoTime" ></app-match-players>
   </div>
 </div>
 <div class="m-2" style="display:flex; width:100%">

@@ -1,4 +1,22 @@
-<div class="row">
-  <label>Email/pwd: </label><input type="text" [(ngModel)]="loginEmail" /><input type="password" [(ngModel)]="loginPwd" /><button (click)="login()">Login</button>
+<div class="container">
+  <div class="row">
+    <div class="col-auto">
+      <label>Email: </label>
+    </div>
+    <div class="col-auto">
+      <input type="text" [(ngModel)]="loginEmail" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-auto">
+      <label>Pasword: </label>
+    </div>
+    <div class="col-auto">
+      <input type="password" [(ngModel)]="loginPwd" />
+    </div>
+  </div>
+  <div class="row">
+    <button (click)="login()">Login</button>
+  </div>
 </div>
 

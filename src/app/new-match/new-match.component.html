@@ -10,7 +10,6 @@
             <option *ngFor="let s of sports" [ngValue]="s">{{s.name}}</option>
           </select>
         </p>
-        {{selectedSport | json}}
       </div>
       <div class="col-auto">
         <p class="input-group">
@@ -20,6 +19,16 @@
           </select>
         </p>
       </div>
+      <div class="col-auto">
+        <div class="col-auto">
+          <p class="input-group">
+            <label>Date: &nbsp;</label>
+            <ngb-datepicker #d class="form-control" [(ngModel)]="matchDate"></ngb-datepicker>
+          </p>
+        </div>
+        </div>
+    </div>
+    <div class="row">
       <div class="col-auto">
         <div class="input-group">
           <input type="text" class="form-control" [(ngModel)]="newPlayer" placeholder="Enter new player" />

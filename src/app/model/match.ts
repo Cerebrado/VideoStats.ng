@@ -8,7 +8,7 @@ export type Match = {
     sport?: Sport,
     placeId: number
     place?: Place,
-    date: Date,
+    date: string,
     user_id: string,
     active: boolean,
     players: Player[],
