@@ -26,8 +26,8 @@
   </div>
   <div>
 
-    <button class="btn btn-primary btn-sm mx-1" (click)="load()"><span class="material-icons">folder_open</span></button>
-    <button class="btn btn-secondary btn-sm mx-1" (click)="rewind()"><span class="material-icons">fast_rewind</span></button>
+    <button class="btn btn-primary btn-sm mx-1 shadow-none" (click)="load()"><span class="material-icons">folder_open</span></button>
+    <button class="btn btn-secondary btn-sm mx-1 shadow-none" (click)="rewind()"><span class="material-icons">fast_rewind</span></button>
     <select [(ngModel)]="timeToJump">
       <option [ngValue]="0.1">0.1</option>
       <option [ngValue]="1">1</option>
@@ -37,28 +37,28 @@
       <option [ngValue]="30">30</option>
       <option [ngValue]="60">60</option>
     </select>
-    <button class="btn btn-secondary btn-sm mx-1" (click)="forward()"><span class="material-icons">fast_forward</span></button>
+    <button class="btn btn-secondary btn-sm mx-1 shadow-none" (click)="forward()"><span class="material-icons">fast_forward</span></button>
     <button class="btn btn-sm mx-1" [ngClass]="isPlaying ? 'btn-dark': 'btn-success'" (click)="playPause()"><span class="material-icons">{{isPlaying ? 'stop': 'play_arrow'}}</span> </button>
     <div class="btn-group ml-1" role="group">
       <button type="button" 
-        class="btn btn-sm data-bs-toggle"  
+        class="btn btn-sm data-bs-toggle shadow-none"  
         [ngClass]="drawingMode === 1 ? 'btn-secondary' : 'btn-outline-secondary'" 
         (click)="setDrawingMode(1)">
         <span class="material-icons">gesture</span>
       </button>
       <button type="button" 
-        class="btn btn-sm data-bs-toggle"
+        class="btn btn-sm data-bs-toggle shadow-none"
         [ngClass]="drawingMode === 2 ? 'btn-secondary' : 'btn-outline-secondary'" 
         (click)="setDrawingMode(2)">
         <span class="material-icons">timeline</span>
       </button>
       <button type="button" 
-        class="btn btn-sm data-bs-toggle"
+        class="btn btn-sm data-bs-toggle shadow-none"
         [ngClass]="drawingMode === 3 ? 'btn-secondary' : 'btn-outline-secondary'" 
         (click)="setDrawingMode(3)">
         <span class="material-icons">clear_all</span>
       </button>
-      <button class="btn btn-outline-danger btn-sm mx-1" (click)="clearCanvas()"><span class="material-icons">clear</span> </button>
+      <button class="btn btn-outline-danger btn-sm mx-1 shadow-none" (click)="clearCanvas()"><span class="material-icons">clear</span> </button>
     </div>
   </div>
 
