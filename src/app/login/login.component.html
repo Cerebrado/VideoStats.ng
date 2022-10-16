@@ -1,22 +1,14 @@
+
 <div class="container">
   <div class="row">
-    <div class="col-auto">
-      <label>Email: </label>
-    </div>
-    <div class="col-auto">
-      <input type="text" [(ngModel)]="loginEmail" />
-    </div>
+      <div class="mr-auto ml-auto text-center">
+        <h1>Sign In</h1>
+        <p>
+          <input class="form-control" type="email" placeholder="Email Address" [(ngModel)]="loginEmail" required autofocus>
+        </p>
+        <p>
+          <input class="form-control" type="password" placeholder="Password" [(ngModel)]="loginPwd" required>
+        </p>
+        <button class="btn btn-primary btn-block" type="button" (click)="login()">Sign In</button>
+      </div>
   </div>
-  <div class="row">
-    <div class="col-auto">
-      <label>Pasword: </label>
-    </div>
-    <div class="col-auto">
-      <input type="password" [(ngModel)]="loginPwd" />
-    </div>
-  </div>
-  <div class="row">
-    <button (click)="login()">Login</button>
-  </div>
-</div>
-

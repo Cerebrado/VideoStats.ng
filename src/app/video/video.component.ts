@@ -33,9 +33,9 @@ export class VideoComponent implements AfterViewInit{
   canvasControlPos = {x:0, y:0}
   
   ctx: CanvasRenderingContext2D;
-  mouseIsInCanvas: boolean = false
 
   constructor() {
+    window.onresize = (e) => this.resizeVideo();
   }
 
   observer: MutationObserver
@@ -49,7 +49,6 @@ export class VideoComponent implements AfterViewInit{
   }
 
   canplay(){
-    console.log("OKOK")
     this.resizeVideo();
   }
 
@@ -72,21 +71,22 @@ export class VideoComponent implements AfterViewInit{
   load(){
 
   }
+
   pause(){
-    this.isPlaying = false;
+    this.isPlaying = false
   }
 
   play(){
-    this.isPlaying = true;
+    this.isPlaying = true
   }
 
   playPause() {
     if (this.videoPlayer.paused) {
       this.videoPlayer.play();
-      this.isPlaying = true;
+      this.play();
     } else {
       this.videoPlayer.pause();
-      this.isPlaying = false;
+      this.pause();
     }
   }
 
@@ -115,14 +115,14 @@ export class VideoComponent implements AfterViewInit{
   }
 
   setPosition(e) {
-    this.mouseIsInCanvas = true;
     this.bitmapPos.x = e.clientX - this.canvasControlPos.x
     this.bitmapPos.y = e.clientY - this.canvasControlPos.y; 
-
-    //console.log(`e.clientX: ${e.clientX}  - this.canvas.offsetLeft: ${this.canvas.offsetLeft} - this.canvasControlPos.x: ${this.canvasControlPos.x}`)
-
   }
   
+  mouseIsInCanvas: boolean = false
+  mouseEnter(){
+    this.mouseIsInCanvas = true;
+  }
   mouseLeave(){
     this.mouseIsInCanvas = false;
   }
@@ -130,12 +130,39 @@ export class VideoComponent implements AfterViewInit{
   
   clearCanvas(){
     this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
+    this.previousPointSet = false;
   }
 
-  draw(e) {
+  drawingMode = 1
+  setDrawingMode(mode: number){
+    this.drawingMode = mode;
+  }
+
+  mouseMove(e) {
     // mouse left button must be pressed
-    if ((!this.mouseIsInCanvas) || e.buttons !== 1 ) return;
-  
+    if (e.buttons !== 1 || this.drawingMode != 1) return;
+    this.drawLine(e);
+  }
+
+  previousPointSet = false
+  mouseDown(e){
+    if(this.drawingMode > 1) {
+      if(!this.previousPointSet) {
+        this.previousPointSet = true;
+      }
+      else
+      {
+        this.drawLine(e)
+        if(this.drawingMode === 3){
+          this.previousPointSet = false;
+          return;
+        }
+      }
+    }
+    this.setPosition(e);
+  }
+
+  drawLine(e) {
     this.ctx.beginPath(); // begin
 
     this.ctx.lineWidth = 5;
@@ -149,5 +176,4 @@ export class VideoComponent implements AfterViewInit{
     this.ctx.stroke(); // draw it!
   }
 
-  
 }

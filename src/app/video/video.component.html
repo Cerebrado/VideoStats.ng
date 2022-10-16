@@ -1,12 +1,13 @@
-  <div style="position:relative">
+  <div style="position:relative; overflow: hidden;">
     <video 
       id="video"
       style="width:100%;"
       (onresize)="resizeVideo()"
       #videoPlayer
-      controls
       controlslist="nodownload nofullscreen noremoteplayback"
       (timeupdate)="timeUpdate($event)"
+      (pause) = "pause()"
+      (play) = "play()"
     >
       <source
         src="https://www.w3schools.com/html/mov_bbb.mp4"
@@ -14,29 +15,52 @@
       />
       Your browser does not support HTML video.
     </video>
-    <canvas  style="border:1px solid red; position:absolute;" 
+    <canvas
+      style="border:1px solid red; position:absolute;z-index: 2000;" 
       #canvas 
-      (mousemove)="draw($event)" 
-      (mousedown)="setPosition($event)" 
-      (mouseenter)="setPosition($event)"
-      (mouseleave)="mouseLeave()" 
+      (mousemove)="mouseMove($event)" 
+      (mousedown)="mouseDown($event)" 
       >
     </canvas>
 
   </div>
   <div>
 
-    <button class="btn btn-primary mx-1" (click)="load()"><span class="material-icons">movie</span></button>
-    <button class="btn btn-secondary mx-1" (click)="rewind()"><span class="material-icons">fast_rewind</span></button>
+    <button class="btn btn-primary btn-sm mx-1" (click)="load()"><span class="material-icons">folder_open</span></button>
+    <button class="btn btn-secondary btn-sm mx-1" (click)="rewind()"><span class="material-icons">fast_rewind</span></button>
     <select [(ngModel)]="timeToJump">
+      <option [ngValue]="0.1">0.1</option>
+      <option [ngValue]="1">1</option>
       <option [ngValue]="5">5</option>
       <option [ngValue]="10">10</option>
       <option [ngValue]="20">20</option>
       <option [ngValue]="30">30</option>
       <option [ngValue]="60">60</option>
     </select>
-    <button class="btn btn-secondary mx-1" (click)="forward()"><span class="material-icons">fast_forward</span></button>
-    <button class="btn mx-1" [ngClass]="isPlaying ? 'btn-dark': 'btn-success'" (click)="playPause()"><span class="material-icons">{{isPlaying ? 'stop': 'play_arrow'}}</span> </button>
+    <button class="btn btn-secondary btn-sm mx-1" (click)="forward()"><span class="material-icons">fast_forward</span></button>
+    <button class="btn btn-sm mx-1" [ngClass]="isPlaying ? 'btn-dark': 'btn-success'" (click)="playPause()"><span class="material-icons">{{isPlaying ? 'stop': 'play_arrow'}}</span> </button>
+    <div class="btn-group ml-1" role="group">
+      <button type="button" 
+        class="btn btn-sm data-bs-toggle"  
+        [ngClass]="drawingMode === 1 ? 'btn-secondary' : 'btn-outline-secondary'" 
+        (click)="setDrawingMode(1)">
+        <span class="material-icons">gesture</span>
+      </button>
+      <button type="button" 
+        class="btn btn-sm data-bs-toggle"
+        [ngClass]="drawingMode === 2 ? 'btn-secondary' : 'btn-outline-secondary'" 
+        (click)="setDrawingMode(2)">
+        <span class="material-icons">timeline</span>
+      </button>
+      <button type="button" 
+        class="btn btn-sm data-bs-toggle"
+        [ngClass]="drawingMode === 3 ? 'btn-secondary' : 'btn-outline-secondary'" 
+        (click)="setDrawingMode(3)">
+        <span class="material-icons">clear_all</span>
+      </button>
+      <button class="btn btn-outline-danger btn-sm mx-1" (click)="clearCanvas()"><span class="material-icons">clear</span> </button>
+    </div>
   </div>
 
   {{bitmapPos | json}}
+  {{previousPointSet}}
