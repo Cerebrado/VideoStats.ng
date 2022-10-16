@@ -38,7 +38,7 @@
       <option [ngValue]="60">60</option>
     </select>
     <button class="btn btn-secondary btn-sm mx-1 shadow-none" (click)="forward()"><span class="material-icons">fast_forward</span></button>
-    <button class="btn btn-sm mx-1" [ngClass]="isPlaying ? 'btn-dark': 'btn-success'" (click)="playPause()"><span class="material-icons">{{isPlaying ? 'stop': 'play_arrow'}}</span> </button>
+    <button class="btn btn-sm mx-1 shadow-none" [ngClass]="isPlaying ? 'btn-dark': 'btn-success'" (click)="playPause()"><span class="material-icons">{{isPlaying ? 'stop': 'play_arrow'}}</span> </button>
     <div class="btn-group ml-1" role="group">
       <button type="button" 
         class="btn btn-sm data-bs-toggle shadow-none"  
