@@ -1,6 +1,6 @@
 <nav class="navbar bg-light">
   <div class="container-fluid">
-    <a class="btn btn-outline-success" type="button" href="/new">
+    <a class="btn btn-secondary" type="button" href="/new">
       <span class="material-icons">note_add</span>
     </a>
     <a class="navbar-brand">
@@ -9,10 +9,10 @@
     <h4 class="navbar-brand">
       <label *ngIf="activeMatch != null">{{activeMatch.sport.name}} - {{activeMatch.place.name}} - {{activeMatch.date}} </label>   
     </h4>
-    <a class="btn btn-outline-success" type="button" href="/stats">
+    <a class="btn btn-secondary" type="button" href="/stats">
       <span class="material-icons">leaderboard</span>
     </a>
-    <a class="btn btn-outline-success" type="button" href="/settings">
+    <a class="btn btn-secondary" type="button" href="/settings">
       <span class="material-icons">settings</span>
     </a>
     <p>
@@ -26,15 +26,15 @@
   </div>
 </nav>
 
-<div class="m-2" style="display:flex; width:100%">
+<div class="m-2" style="display:flex">
   <div class="mr-1" style="resize: horizontal; overflow: auto;width:50%" id="videoDiv" #videoDiv>
     <app-video (timeChanged)="videoTimeChanged($event)"></app-video>
   </div>
   <div class="ml-1" style="flex-grow: 1;">
-    <app-match-players [activeMatch]="activeMatch" [videoTime]="videoTime" ></app-match-players>
+    <events-panel [activeMatch]="activeMatch" [videoTime]="videoTime" ></events-panel>
   </div>
 </div>
-<div class="m-2" style="display:flex; width:100%">
+<div class="m-2" style="display:flex">
   <div class="mr-1" style="resize: horizontal; overflow: auto;width:50%">
     <app-court [orientation]="'H'"></app-court>
   </div>
