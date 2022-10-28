@@ -16,18 +16,18 @@
       Your browser does not support HTML video.
     </video>
     <canvas
-      style="border:1px solid red; position:absolute;z-index: 2000;" 
+      style="position:absolute;z-index: 2000;" 
       #canvas 
-      (mousemove)="mouseMove($event)" 
+      (mousemove)="mouseMove($event)"
       (mousedown)="mouseDown($event)" 
       >
     </canvas>
-
   </div>
-  <div>
-
-    <button class="btn btn-primary btn-sm mx-1 shadow-none" (click)="load()"><span class="material-icons">folder_open</span></button>
-    <button class="btn btn-secondary btn-sm mx-1 shadow-none" (click)="rewind()"><span class="material-icons">fast_rewind</span></button>
+  <div class="input-group">
+    <button class="btn btn-sm mx-1 shadow-none" [ngClass]="isPlaying ? 'btn-dark': 'btn-success'" (click)="playPause()"><span class="material-icons">{{isPlaying ? 'stop': 'play_arrow'}}</span> </button>
+    <input type="range" class="range" min="0" [max]="videoPlayer.duration" step="0.5" [(ngModel)]="videoPlayerCurrentTime" (ngModelChange)="setCurrentTimeValue($event)">
+      <span class="input-group-text ml-1" >{{videoPlayerCurrentTime | number:'0.1-1'}} / {{videoPlayer.duration | number:'0.1-1'}}</span>
+    <button class="btn btn-secondary btn-sm ml-2 mr-1 shadow-none" (click)="rewind()"><span class="material-icons">fast_rewind</span></button>
     <select [(ngModel)]="timeToJump">
       <option [ngValue]="0.1">0.1</option>
       <option [ngValue]="1">1</option>
@@ -38,8 +38,7 @@
       <option [ngValue]="60">60</option>
     </select>
     <button class="btn btn-secondary btn-sm mx-1 shadow-none" (click)="forward()"><span class="material-icons">fast_forward</span></button>
-    <button class="btn btn-sm mx-1 shadow-none" [ngClass]="isPlaying ? 'btn-dark': 'btn-success'" (click)="playPause()"><span class="material-icons">{{isPlaying ? 'stop': 'play_arrow'}}</span> </button>
-    <div class="btn-group ml-1" role="group">
+    <div class="btn-group ml-3" role="group">
       <button type="button" 
         class="btn btn-sm data-bs-toggle shadow-none"  
         [ngClass]="drawingMode === 1 ? 'btn-secondary' : 'btn-outline-secondary'" 

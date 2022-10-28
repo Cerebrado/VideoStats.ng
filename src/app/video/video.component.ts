@@ -16,11 +16,13 @@ export class VideoComponent implements AfterViewInit{
 
   videoPlayer: HTMLVideoElement;
   @ViewChild('videoPlayer')
+  
   set mainVideoEl(el: ElementRef) {
     this.videoPlayer = el.nativeElement;
   }
   timeToJump=5;
   isPlaying: boolean = false
+  videoPlayerCurrentTime = 0;
 
   canvas: HTMLCanvasElement
   
@@ -99,8 +101,13 @@ export class VideoComponent implements AfterViewInit{
     this.videoPlayer.currentTime += this.timeToJump;
   }
 
+  setCurrentTimeValue(value){
+    this.videoPlayer.currentTime =value;
+  }
+
   @Output() timeChanged = new EventEmitter<any>();
   timeUpdate(data) {
+    this.videoPlayerCurrentTime = data.target.currentTime;
     this.timeChanged.emit(data.target.currentTime);
   }
 
