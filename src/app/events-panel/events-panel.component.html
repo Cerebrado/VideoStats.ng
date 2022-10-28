@@ -18,36 +18,43 @@
     </div>
   </div>
   <div class="d-flex justify-content-between flex-nowrap mb-3">
-    <button class="btn btn-secondary" (click)="undo()"><span class="material-icons">undo</span></button>
     <div class="d-flex justify-content-start flex-wrap list-group-horizontal" style="border:1px solid grey; width:100%">
-      <li *ngIf="eventsInput != null" class="list-group-item list-group-item-dark">{{eventsInput?.player.name}}</li>
-      <li  class="list-group-item" *ngFor="let e of eventsInput?.events">{{e.name}}</li>
+      <div *ngFor="let e of eventsInputs" class="d-flex justify-content-start flex-wrap list-group-horizontal" style="border:1px solid grey; width:100%">
+        <li class="list-group-item list-group-item-dark">{{e.player.name}}</li>
+        <li  class="list-group-item" *ngFor="let e of e.events">{{e.name}}</li>
+      </div>
     </div>
-    <button class="btn btn-primary" (click)="saveRow()"><span class="material-icons">done</span></button>
+    <button class="btn btn-secondary" (click)="undo()"><span class="material-icons">undo</span></button>
   </div>
-  <div class="d-flex flex-nowrap mb-3">
-    <div class="flex-fill">
-      <textarea class="form-control" placeholder="Comment" rows="4"></textarea>
-    </div>
-    <div class="d-flex flex-fill flex-column ml-3">
+  <div class="d-flex flex-nowrap mb-2 mt-1">
+    <textarea class="form-control" placeholder="Comment" rows="4" style="border:1px solid black"></textarea>
+    <div class="d-flex flex-fill flex-column ml-2">
+      <table class="table table-sm table-borderless" style="width:100%">
+        <tr *ngFor="let r of [0,1]">
+          <td
+            style="width:20%; border:1px solid black;text-align: center"
+            [ngClass]="selectedResultIdx===r*4 ?'btn-primary': 'btn-outline-dark'" 
+            (click)="selectedResultIdx=r*4">
+            {{results[r*4]}}
+          </td>
+          <td style="width:20%;text-align: center">
+            -
+          </td>    
+          <td *ngFor="let i of [1,2,3]" 
+          style="width:20%; border:1px solid black;text-align: center"
+          [ngClass]="selectedResultIdx===(r*4)+i ?'btn-primary': 'btn-outline-dark'" 
+            (click)="selectedResultIdx=(r*4)+i">
+            {{results[(r*4)+i]}}
+          </td>
+        </tr>
+      </table>
       <div class="btn-group" role="group">
-        <button class="btn btn-sm data-bs-toggle shadow-none border-bottom-0" [ngClass]="selectedResultIdx===0 ?'btn-primary': 'btn-outline-dark'" (click)="selectedResultIdx=0">{{results[0]}}</button>
-        <button class="btn btn-sm data-bs-toggle shadow-none border-bottom-0 ml-4" [ngClass]="selectedResultIdx===1 ?'btn-primary': 'btn-outline-dark'" (click)="selectedResultIdx=1">{{results[1]}}</button>
-        <button class="btn btn-sm data-bs-toggle shadow-none border-bottom-0" [ngClass]="selectedResultIdx===2 ?'btn-primary': 'btn-outline-dark'" (click)="selectedResultIdx=2">{{results[2]}}</button>
-        <button class="btn btn-sm data-bs-toggle shadow-none border-bottom-0" [ngClass]="selectedResultIdx===3 ?'btn-primary': 'btn-outline-dark'" (click)="selectedResultIdx=3">{{results[3]}}</button>
-      </div>
-      <div class="btn-group" role="group">
-        <button class="btn btn-sm data-bs-toggle shadow-none" [ngClass]="selectedResultIdx===4 ?'btn-primary': 'btn-outline-dark'" (click)="selectedResultIdx=4">{{results[4]}}</button>
-        <button class="btn btn-sm data-bs-toggle shadow-none ml-4" [ngClass]="selectedResultIdx===5 ?'btn-primary': 'btn-outline-dark'" (click)="selectedResultIdx=5">{{results[5]}}</button>
-        <button class="btn btn-sm data-bs-toggle shadow-none" [ngClass]="selectedResultIdx===6 ?'btn-primary': 'btn-outline-dark'" (click)="selectedResultIdx=6">{{results[6]}}</button>
-        <button class="btn btn-sm data-bs-toggle shadow-none" [ngClass]="selectedResultIdx===7 ?'btn-primary': 'btn-outline-dark'" (click)="selectedResultIdx=7">{{results[7]}}</button>
-      </div>
-      <div class="btn-group mt-2" role="group">
         <button class="btn btn-sm btn-outline-dark" *ngFor="let v of possibleResultValues; let i = index"  
-            (click)="setResult(v)">{{possibleResultValues[i]}}
-          </button>
+          (click)="setResult(v)">{{possibleResultValues[i]}}
+        </button>
       </div>
     </div>
+    <button class="btn btn-primary ml-2" (click)="saveRow()"><span class="material-icons">done</span></button>
   </div>
   <div class="d-flex mb-3">
     <div class="card">

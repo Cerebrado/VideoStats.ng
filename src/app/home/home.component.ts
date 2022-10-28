@@ -1,3 +1,4 @@
+import { JsonPipe } from '@angular/common';
 import { Component, ElementRef, OnInit, VERSION, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Match } from '../model/match';
@@ -21,6 +22,17 @@ export class HomeComponent implements OnInit {
   video: VideoComponent
 
   async ngOnInit(){
+    
+    this.activeMatch = await this.getActiveMatch();
+    this.detectDivStyleChanges();
+  }
+
+  async getActiveMatch() {
+
+    let am =  localStorage.getItem('activeMatch');
+    if(am)
+      return JSON.parse(am);
+
     let {data:  activeMatch, error}  = await this.supaService.db
     .from('Matches')
     .select(`*, 
@@ -39,9 +51,10 @@ export class HomeComponent implements OnInit {
     }
 
     if(activeMatch != null){
-      this.activeMatch = activeMatch
+      localStorage.setItem('activeMatch', JSON.stringify(activeMatch))
+      return activeMatch
     }
-    this.detectDivStyleChanges();
+    return null;
   }
   
   detectDivStyleChanges() {

@@ -67,7 +67,8 @@ export class VideoComponent implements AfterViewInit{
         }
     }
     return p;
-}
+  }
+  
   load(){
 
   }
@@ -135,6 +136,7 @@ export class VideoComponent implements AfterViewInit{
 
   drawingMode = 1
   setDrawingMode(mode: number){
+    this.previousPointSet = false;
     this.drawingMode = mode;
   }
 

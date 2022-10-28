@@ -12,7 +12,7 @@ const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
-    canActivate: [AuthGuard],
+    //canActivate: [AuthGuard],
   },
   {
     path: 'login',
@@ -21,17 +21,17 @@ const routes: Routes = [
   {
     path: 'pwdSet',
     component: PasswordSetComponent,
-    canActivate: [AuthGuard]
+    //canActivate: [AuthGuard]
   },
   {
     path: 'settings',
     component: SettingsComponent,
-    canActivate: [AuthGuard]
+    //canActivate: [AuthGuard]
   },
   {
     path: 'new',
     component: NewMatchComponent,
-    canActivate: [AuthGuard]
+    //canActivate: [AuthGuard]
   }
 ]
 

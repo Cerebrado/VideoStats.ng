@@ -30,36 +30,38 @@ export class EventsPanelComponent implements OnInit {
     return this.activeMatch?.events.filter(x=>x.balance == b);
   }
 
-  eventsInput =  null
+  eventsInputs = []
   eventsHistory = [];
 
   selectPlayer(p: Player){
-    if(this.eventsInput != null){
-      this.errorMsg = 'Ya hay un jugador seleccionado / There is already a selected player'
-      return;
+    if(this.eventsInputs.length > 0
+        &&
+      this.eventsInputs[this.eventsInputs.length -1].events.length === 0){
+        this.eventsInputs[this.eventsInputs.length -1].player = p
     }
-
-    this.eventsInput = {player: p, events: []}
+    else {
+      this.eventsInputs.push({player: p, events: []})
+    }
   }
 
   selectEvent(e: SportEvent){
-    if(this.eventsInput === null){
+    if(this.eventsInputs.length === 0){
       this.errorMsg = 'Seleccione un jugador primero / Select a player first'
       return;
     }
-    this.eventsInput.events.push(e);
+    this.eventsInputs[this.eventsInputs.length - 1].events.push(e);
   }
   
   undo(){
-    if(this.eventsInput === null)
+    if(this.eventsInputs.length === 0)
       return
     
-    if(this.eventsInput.events.length > 0){
-      this.eventsInput.events.splice(-1)
+    if(this.eventsInputs[this.eventsInputs.length-1].events.length > 0){
+      this.eventsInputs[this.eventsInputs.length-1].events.splice(-1)
     }
     else
     {
-      this.eventsInput = null;
+      this.eventsInputs.splice(-1);
     }
   }
 
@@ -70,11 +72,11 @@ export class EventsPanelComponent implements OnInit {
     }
 
     if(value.startsWith("+") || value.startsWith("-") ){
-      const currentResultValue = parseInt(this.results[this.selectedResultIdx])
-      if(currentResultValue == NaN) {
+      if(isNaN(Number(this.results[this.selectedResultIdx]))) {
         this.errorMsg = "No es un número / It is not a number"
         return;
       }
+      const currentResultValue = parseInt(this.results[this.selectedResultIdx])
       this.results[this.selectedResultIdx] = (currentResultValue + parseInt(value)).toString()
     } 
     else{
@@ -84,8 +86,8 @@ export class EventsPanelComponent implements OnInit {
   
 
   saveRow(){
-    this.eventsHistory.push(this.eventsInput);
-    this.eventsInput = null;
+    this.eventsHistory.push(this.eventsInputs);
+    this.eventsInputs = null;
   }
 
 }
