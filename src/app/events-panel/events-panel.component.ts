@@ -87,7 +87,7 @@ export class EventsPanelComponent implements OnInit {
 
   saveRow(){
     this.eventsHistory.push(this.eventsInputs);
-    this.eventsInputs = null;
+    this.eventsInputs = [];
   }
 
 }

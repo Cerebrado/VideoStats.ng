@@ -27,7 +27,7 @@
 </nav>
 
 <div class="m-2" style="display:flex">
-  <div class="mr-1" style="resize: horizontal; overflow: auto;width:50%" id="videoDiv" #videoDiv>
+  <div class="mr-1" style="resize: horizontal; overflow: auto; width:50%;flex-shrink: 0; " id="videoDiv" #videoDiv>
     <app-video (timeChanged)="videoTimeChanged($event)"></app-video>
   </div>
   <div class="ml-1" style="flex-grow: 1;">
