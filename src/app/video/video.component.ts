@@ -16,21 +16,19 @@ export class VideoComponent implements AfterViewInit{
 
   videoPlayer: HTMLVideoElement;
   @ViewChild('videoPlayer')
-  
   set mainVideoEl(el: ElementRef) {
     this.videoPlayer = el.nativeElement;
   }
-  timeToJump=5;
-  isPlaying: boolean = false
-  videoPlayerCurrentTime = 0;
 
   canvas: HTMLCanvasElement
-  
-
   @ViewChild('canvas')
   set mainCanvasEl(el: ElementRef) {
     this.canvas = el.nativeElement;
   }
+
+  timeToJump=5;
+  isPlaying: boolean = false
+  videoPlayerCurrentTime = 0;
   bitmapPos = {x:0, y:0}
   canvasControlPos = {x:0, y:0}
   

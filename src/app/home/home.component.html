@@ -7,7 +7,7 @@
       <label *ngIf="activeMatch == null">No active match</label>   
     </a>
     <h4 class="navbar-brand">
-      <label *ngIf="activeMatch != null">{{activeMatch.sport.name}} - {{activeMatch.place.name}} - {{activeMatch.date}} </label>   
+      <label *ngIf="activeMatch != null">{{activeMatch.sport.name}} -  {{activeMatch.year}}.{{activeMatch.month}}.{{activeMatch.day}}.{{activeMatch.year}}h </label>   
     </h4>
     <a class="btn btn-secondary" type="button" href="/stats">
       <span class="material-icons">leaderboard</span>
@@ -29,13 +29,12 @@
 <div class="m-2" style="display:flex">
   <div class="mr-1" style="resize: horizontal; overflow: auto; width:50%;flex-shrink: 0; " id="videoDiv" #videoDiv>
     <app-video (timeChanged)="videoTimeChanged($event)"></app-video>
-  </div>
+      <div class="mt-2" style="resize: horizontal; overflow: auto;width:50%;flex-grow: 1;">
+        <app-court [orientation]="'H'"></app-court>
+      </div>
+    </div>
+
   <div class="ml-1" style="flex-grow: 1;">
     <events-panel [activeMatch]="activeMatch" [videoTime]="videoTime" ></events-panel>
-  </div>
-</div>
-<div class="m-2" style="display:flex">
-  <div class="mr-1" style="resize: horizontal; overflow: auto;width:50%">
-    <app-court [orientation]="'H'"></app-court>
   </div>
 </div>

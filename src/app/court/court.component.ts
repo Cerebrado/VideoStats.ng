@@ -17,32 +17,22 @@ export class CourtComponent implements OnInit {
     this.calculateCourtcells();
   }
 
-  @Input() rows: any = 4;
-  @Input() cols: any = 3;
+  @Input() rows: number = 4;
+  @Input() cols: number = 6;
+  @Input() orientation: string = 'H';
 
   rowCells = [];
   colCells = [];
 
-  @Input() orientation: string = 'H';
 
   calculateCourtcells() {
     this.rowCells.splice(0);
     this.colCells.splice(0);
 
-    let rowLimit = this.rows;
-    let colLimit = this.cols;
-    
-    if(this.orientation == 'H')
-    {
-       colLimit *= 2;
-    }
-    else{
-      rowLimit *= 2;;
-    }
-    for (let i = 1; i <= rowLimit; i++) {
+    for (let i = 1; i <= this.rows; i++) {
       this.rowCells.push(i);
     }
-    for (let i = 1; i <= colLimit; i++) {
+    for (let i = 1; i <=this.cols; i++) {
       this.colCells.push(i);
     }
   }
@@ -50,26 +40,23 @@ export class CourtComponent implements OnInit {
   cellClicked(row, col) {}
 
   calculateCellStyle(i, j) {
-    var style = {
-      border: '1px dotted black',
-    };
+    var style = "border: 1px dotted black;"
+    
 
-    if (this.orientation == 'H' && j == 4) {
-      style['border-right'] = '4px solid black';
-    } else if (this.orientation == 'V' && i == 4) {
-      style['border-bottom'] = '4px solid black';
+    if (this.orientation == 'H' && j == this.cols/2) {
+      style += "border-right: 4px solid black;"
+    } else if (this.orientation == 'V' && i == this.rows/2) {
+      style += "border-bottom: 4px solid black;"
     }
-
-    style['width'] = '50px';
-    style['height'] = '50px';
+     style += "width: 50px;height: 50px;"
 
     return style;
   }
 
   CalculateCellClass(i, j) {
-    if (this.orientation == 'H' && j == this.cols) {
+    if (this.orientation == 'H' && j == this.cols-1) {
       return 'squareRightBorderBold';
-    } else if (this.orientation == 'V' && i == this.rows) {
+    } else if (this.orientation == 'V' && i == this.rows -1) {
       return 'squareBottomBorderBold';
     }
 

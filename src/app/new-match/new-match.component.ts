@@ -1,5 +1,4 @@
-import { Component} from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {  Component, ElementRef, ViewChild} from '@angular/core';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { Match } from '../model/match';
 import { Player } from '../model/player';
@@ -7,36 +6,50 @@ import { Sport } from '../model/sport';
 import { Place } from '../model/place';
 import { SupabaseService } from '../supabase.service';
 import { Router } from '@angular/router';
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDate, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'new-match',
   templateUrl: './new-match.component.html',
 })
 export class NewMatchComponent {
-  availablePlayersPerTeam: number[] =[1,2,3,4,5,6,7,8,10,11,12,13,14,15,16,17,18,19,20,21,22];
-
-  sports: Sport[]=[];
-  places: Place[]=[];
-  players: Player[]=[];
-  
-  selectedSport: Sport | null
-  selectedPlace: Place | null
-  matchDate: NgbDateStruct
-  matchPlayers: Player[] = []
-  newPlayer:string = ''
-
-  user_id: string
-  DB: SupabaseClient
   constructor(private supaSvc: SupabaseService, private router: Router) { 
     this.DB = supaSvc.db;
     this.user_id = supaSvc.getSession()?.user?.id as string
-
   }
 
+
+  videoPlayer: HTMLVideoElement;
+  @ViewChild('videoPlayer')
+  set mainVideoEl(el: ElementRef) {
+    this.videoPlayer = el.nativeElement;
+  }
+
+
+  sports: Sport[]=[];
+  places: Place[]=[];
+  availablePlayers: Player[]=[];
+  
+  selectedSport: Sport 
+  name: string = ''
+  ngdate: NgbDate
+  hour: number 
+  minutes: string = '00' 
+  matchPlayers: Player[] = []
+  videoPath:string = 'https://www.w3schools.com/html/mov_bbb.mp4'
+
+  newPlayer:string = ''
+  searchPlayer:string = ''
+  videoLoaded = false;
+
+  user_id: string
+  DB: SupabaseClient
+
   async ngOnInit() {
+    const today = new Date();
+    this.ngdate = new NgbDate(today.getFullYear(), today.getMonth() + 1,today.getDate());
+    this.hour = today.getHours(),
     await this.getSports();
-    await this.getPlaces();
-    await this.getPlayers();
+    await this.getAvailablePlayers();
   }
 
   async getSports() {
@@ -46,21 +59,15 @@ export class NewMatchComponent {
       this.selectedSport = this.sports[0]
   }
 
-  async getPlaces() {
-    this.places =  await this.supaSvc.getMany('Places',`*`);
-    if(this.places.length > 0)
-      this.selectedPlace = this.places[0]
-  }
-
-  async getPlayers() {
-    this.players=await this.supaSvc.getMany('Players',`*`);;
+  async getAvailablePlayers() {
+    this.availablePlayers=await this.supaSvc.getMany('Players',`*`);;
   }
 
   async addPlayer(){
     if(this.newPlayer == '')
       return
     
-    if(this.players.some(x=>x.name == this.newPlayer)){
+    if(this.availablePlayers.some(x=>x.name == this.newPlayer)){
         alert('Player ' + this.newPlayer + ' already exists')
         this.newPlayer = ''
         return
@@ -72,7 +79,7 @@ export class NewMatchComponent {
       return;
     }
 
-    this.players.push(data)   
+    this.availablePlayers.push(data)   
     this.newPlayer = ''
   }
 
@@ -91,25 +98,40 @@ export class NewMatchComponent {
       this.matchPlayers.splice(idx, 1);
   }
 
+  async loadVideo() {
+    this.videoLoaded =true;
+    this.videoPlayer.src=this.videoPath;
+    this.videoPlayer.load();
+  }
+
+  onvideoError(e){
+    this.videoLoaded = false;
+  }
+
   async btnConfirmNewMatchClick() {
-    if(this.selectedSport == null || this.selectedPlace == null || this.matchPlayers.length == 0){
-      alert('Debe elegir un deporte, un torneo y completar la cantidad de jugadores');
+    if(this.selectedSport == null || this.name == '' || this.matchPlayers.length == 0){
+      alert('Debe elegir un deporte, e ingresar un nombre y jugadores');
       return;
     }
     
     const {data: activeMatch, error:errorUpdating} = await this.DB.from('Matches').update({'active': false}).eq('active', true);
     if(errorUpdating){
-      alert('Cannot finish previous match, check console') 
       console.log(errorUpdating)
     }
 
     const newMatch: Match = {
-      date: this.matchDate.toString(),
+      matchId: 0,
       sportId: this.selectedSport.sportId,
-      placeId: this.selectedPlace.placeId,
+      name: this.name,
       active: true,
       players: this.matchPlayers,
       events: this.selectedSport.SportEvents,
+      year: this.ngdate.year,
+      month: this.ngdate.month -1,
+      day: this.ngdate.day,
+      hour: this.hour,
+      minutes: parseInt(this.minutes),
+      videoPath:this.videoPath,
       user_id: this.user_id
     }
 

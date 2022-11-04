@@ -1,86 +1,153 @@
+<div class="mh-100">    
   <div class="modal-header">
     <h5>New Match</h5>
   </div>
   <div class="modal-body" style="height:60vh">
     <div class="row">
       <div class="col-auto">
-        <p class="input-group">
-          <label>Sport: &nbsp;</label>       
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <label class="input-group-text">Sport: &nbsp;</label>       
+          </div>
           <select class="form-control" [(ngModel)]="selectedSport">
             <option *ngFor="let s of sports" [ngValue]="s">{{s.name}}</option>
           </select>
-        </p>
-      </div>
-      <div class="col-auto">
-        <p class="input-group">
-          <label>Place: &nbsp;</label>
-          <select class="form-control" [(ngModel)]="selectedPlace">
-            <option *ngFor="let t of places" [ngValue]="t">{{t.name}}</option>
-          </select>
-        </p>
-      </div>
-      <div class="col-auto">
-        <div class="col-auto">
-          <p class="input-group">
-            <label>Date: &nbsp;</label>
-            <ngb-datepicker #d class="form-control" [(ngModel)]="matchDate"></ngb-datepicker>
-          </p>
         </div>
-        </div>
-    </div>
-    <div class="row">
+      </div>
       <div class="col-auto">
         <div class="input-group">
-          <input type="text" class="form-control" [(ngModel)]="newPlayer" placeholder="Enter new player" />
-          <button
-          class="btn btn-outline-primary btn-sm "
-          type="button"
-          (click)="addPlayer()"><span class="material-icons">add</span>
-          </button>
+          <div class="input-group-prepend">
+            <label class="input-group-text">Date: &nbsp;</label>       
+          </div>
+            <input
+            class="form-control-text"
+            placeholder="yyyy-mm-dd"
+            name="dp"
+            [(ngModel)]="ngdate"
+            ngbDatepicker
+            #d="ngbDatepicker"
+          />
+          <button class="btn btn-outline-secondary bi bi-calendar3 input-group-append" (click)="d.toggle()" type="button">
+            <span class="material-icons">today</span>
+          </button>          
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <label class="input-group-text">Time: &nbsp;</label>       
+          </div>
+          <select class="form-control" [(ngModel)]="hour">
+            <option *ngFor="let s of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]" [ngValue]="s">{{s}}</option>
+          </select>
+          <div class="input-group-prepend">
+            <label class="input-group-text">:</label>       
+          </div>
+          <select class="form-control" [(ngModel)]="minutes">
+            <option *ngFor="let s of ['00','15','30','45']" [ngValue]="s">{{s}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <label class="input-group-text">Description: &nbsp;</label>       
+          </div>
+          <input type="text" class="form-control" [(ngModel)]="name" placeholder="Enter game description" />
         </div>
       </div>
     </div>
+
+
     <div class="row mt-2">
-      <div class="col-4">
+      <div class="col-6">
         <div class="card">
-          <div class="card-header">
-            Available
+          <div class="card-header input-group">
+            <span><h5>Players</h5></span>
+            <input type="text" class="ml-3 form-control" [(ngModel)]="newPlayer" placeholder="Enter new player" />
+            <button
+            class="btn btn-outline-primary btn-sm"
+            type="button"
+            (click)="addPlayer()"><span class="material-icons">add</span>
+            </button>
           </div>
-          <div class="card-body" style="height:30vh; overflow-y:scroll">
-            <table class="table table-sm">
-              <tr
-                style="cursor: pointer"
-                *ngFor="let p of players"
-                (click)="confirmPlayer(p)"
-              >
-                <td width="90%">{{ p.name }}</td>
-                <td>
-                  <button class="btn">
-                    <span class="material-icons pull-right">arrow_right</span>
-                  </button>
-                </td>
-              </tr>
-            </table>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-6">
+                <div class="card">
+                  <div class="input-group card-header">
+                    <span class="input-group-text input-group-prepend">Available</span>
+                    <input type="text" class="form-control" [(ngModel)]="searchPlayer" placeholder="search..." />
+                    <span class="material-icons input-group-text input-group-append">search</span>
+                  </div>
+                  <div class="card-body" style="height:30vh; overflow-y:scroll">
+                    <table class="table table-sm">
+                      <tr
+                        style="cursor: pointer"
+                        *ngFor="let p of availablePlayers"
+                        (click)="confirmPlayer(p)"
+                      >
+                        <td width="90%">{{ p.name }}</td>
+                        <td>
+                          <button class="btn">
+                            <span class="material-icons pull-right">arrow_right</span>
+                          </button>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="card-header input-group">
+                  <span class="input-group-text input-group-prepend">Selected</span>
+                </div>
+                <div class="card-body"  style="height:30vh;overflow-y:scroll">
+                  <table class="table-sm">
+                    <tr *ngFor="let p of matchPlayers; let i=index">
+                      <td width="90%">{{p.name}} </td>
+                      <td>
+                        <button class="btn" (click)="unconfirmPlayer(p)">
+                          <span class="material-icons pull-right">cancel</span>
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col-8">
-        <div class="card-header">
-          Selected
+      </div>        
+      <div class="col-6">
+        <div class="card-header input-group">
+          <span class="input-group-text input-group-prepend">Video</span>
+          <input type="text" class="form-control" [(ngModel)]="videoPath" placeholder="enter url..." />
+          <button
+          class="btn btn-outline-primary btn-sm"
+          type="button"
+          (click)="loadVideo()"><span class="material-icons">add</span>
+          </button>
         </div>
-        <div class="card-body"  style="height:30vh; overflow-y:scroll">
-          <table class="table-sm">
-            <tr *ngFor="let p of matchPlayers; let i=index">
-              <td width="90%">{{p.name}} </td>
-              <td>
-                <button class="btn" (click)="unconfirmPlayer(p)">
-                  <span class="material-icons pull-right">cancel</span>
-                </button>
-              </td>
-            </tr>
-          </table>
+          <div class="card-body">
+            <span *ngIf="!videoLoaded">
+              No video loaded
+            </span>
+            <video [style.display]="videoLoaded?'':'none'"
+              id="video"
+              #videoPlayer
+              style="width:100%;"
+              controlslist="nodownload nofullscreen noremoteplayback"
+              controls
+              (error)="onvideoError($event)"
+            >
+            <source
+              type="video/mp4"
+            />
+            Your browser does not support HTML video.
+          </video>
+    
         </div>
-      </div>
     </div>
   </div>
 
@@ -94,3 +161,4 @@
       Cancelar
   </a>
   </div>
+</div>
