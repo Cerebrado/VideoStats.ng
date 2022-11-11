@@ -3,7 +3,6 @@ import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap'
 import { FormsModule } from '@angular/forms'
 import { Sport } from '../model/sport'
 import { SportEvent } from '../model/sportEvent'
-import { Place } from '../model/place'
 import { Player } from '../model/player'
 import { NewEventComponent } from '../new-event/new-event.component'
 import { InputBoxComponent } from '../input-box/input-box.component'
@@ -20,11 +19,21 @@ import { SupabaseClient } from '@supabase/supabase-js'
 export class SettingsComponent implements OnInit {
 
   sports: Sport[]=[]
-  places: Place[]=[]
-  players: Player[]=[]
-
   selectedSport: Sport | null
-  selectedPlace: Place | null
+  
+  finalScoreSlots= 1
+  finalScoreMode= 0
+  finalScoreValues:string[]= ['1','+1']
+  newFinalScoreValueModifier= 0
+  newFinalScoreValue= ''
+
+  partialScoreSlots= 1
+  partialScoreMode= 0
+  partialScoreValues:string[] = [];
+  newPartialScoreValueModifier = 0
+  newPartialScoreValue= ''
+
+  players: Player[]=[]
   newPlayer:string = ''
 
   DB: SupabaseClient
@@ -37,7 +46,6 @@ export class SettingsComponent implements OnInit {
 
   async ngOnInit() {
     await this.getSports();
-    await this.getPlaces();
     await this.getPlayers();
   }
 
@@ -46,8 +54,6 @@ export class SettingsComponent implements OnInit {
     if(this.sports.length > 0)
       this.selectedSport =this.sports[0]
   }
-
-
 
   async addSport(){
     const modal = this.modalService.open(InputBoxComponent)
@@ -93,53 +99,6 @@ export class SettingsComponent implements OnInit {
     this.sports.splice(idx, 1);
   }     
 
-  async getPlaces() {
-    this.places = await this.supaSvc.getMany('Places', '*')
-    if(this.places.length > 0)
-      this.selectedPlace = this.places[0]
-  }
-
-  async addPlace(){
-    const modal = this.modalService.open(InputBoxComponent)
-    modal.componentInstance.label = "Add"
-    modal.componentInstance.title = "Place"
-    modal.result
-      .then(async (result:string) => {
-        let {data, error} = await this.DB.from('Places').insert({name: result, user_id: this.user_id}).single()
-        if(error){
-          alert('Cannot insert places, check console') 
-          console.log(error)
-          return;
-        }
-        this.places.push(data)
-        this.selectedPlace = data
-      })
-  }
-
-  async deletePlace(){
-    if(this.selectedPlace == null)
-      return
-    
-    if(!confirm('You will delete the place, places, events,  players and statistics associated. Continue?'))
-      return;
-    let {data, error} = await  this.DB.from('Places').delete().eq('placeId', this.selectedPlace.placeId)
-    if(error){
-      alert('Cannot delete place, check console') 
-      console.log(error)
-      return;
-    }
-
-    let idx = this.places.findIndex(x=>x.placeId === this.selectedPlace.placeId)
-    this.places.splice(idx, 1);
-
-    if(this.places.length == 1) //removed the only one
-      this.selectedPlace = null
-    else if (idx == this.places.length ) //removed the last one
-      this.selectedPlace = this.places[idx-1]
-    else
-      this.selectedPlace = this.places[idx] //removed any other
-  }
-
 
   addEvent(){
     if(this.selectedSport == null)
@@ -161,7 +120,6 @@ export class SettingsComponent implements OnInit {
   }
 
 
-
   async deleteEvent(idx: number){
     if(!confirm('You will delete the event and statistics associated. Continue?'))
       return;
@@ -174,6 +132,46 @@ export class SettingsComponent implements OnInit {
     }
     this.selectedSport.SportEvents.splice(idx, 1);
   }
+
+  addFinalScoreValue(){
+    let modifier=''
+    if(this.newFinalScoreValueModifier === 1)
+    {
+      modifier='+'
+    }
+    else if(this.newFinalScoreValueModifier === 1)
+    {
+      modifier='-'
+    }
+
+    this.finalScoreValues.push(modifier + this.newFinalScoreValue);
+  }
+
+  deleteFinalScoreValue(value){
+    var idx = this.finalScoreValues.findIndex(x=>x == value);
+    this.finalScoreValues.splice(idx, 1);
+  }
+
+
+  addPartialScoreValue(){
+    let modifier=''
+    if(this.newPartialScoreValueModifier === 1)
+    {
+      modifier='+'
+    }
+    else if(this.newPartialScoreValueModifier === 1)
+    {
+      modifier='-'
+    }
+
+    this.partialScoreValues.push(modifier + this.newPartialScoreValue);
+  }
+
+  deletePartialScoreValue(value){
+    var idx = this.partialScoreValues.findIndex(x=>x == value);
+    this.partialScoreValues.splice(idx, 1);
+  }
+
 
   async getPlayers() {
     this.players = await this.supaSvc.getMany('Players', '*')

@@ -77,17 +77,17 @@
                 <div class="card">
                   <div class="input-group card-header">
                     <span class="input-group-text input-group-prepend">Available</span>
-                    <input type="text" class="form-control" [(ngModel)]="searchPlayer" placeholder="search..." />
+                    <input type="text" class="form-control" (input)="searchPlayerChange($event)" [(ngModel)]="searchPlayerText" placeholder="search..." />
                     <span class="material-icons input-group-text input-group-append">search</span>
                   </div>
                   <div class="card-body" style="height:30vh; overflow-y:scroll">
                     <table class="table table-sm">
                       <tr
                         style="cursor: pointer"
-                        *ngFor="let p of availablePlayers"
+                        *ngFor="let p of filteredPlayers"
                         (click)="confirmPlayer(p)"
                       >
-                        <td width="90%">{{ p.name }}</td>
+                        <td width="90%">{{p.name}}</td>
                         <td>
                           <button class="btn">
                             <span class="material-icons pull-right">arrow_right</span>
@@ -103,7 +103,7 @@
                   <span class="input-group-text input-group-prepend">Selected</span>
                 </div>
                 <div class="card-body"  style="height:30vh;overflow-y:scroll">
-                  <table class="table-sm">
+                  <table class="table table-sm">
                     <tr *ngFor="let p of matchPlayers; let i=index">
                       <td width="90%">{{p.name}} </td>
                       <td>

@@ -29,17 +29,15 @@ export class HomeComponent implements OnInit {
 
   async getActiveMatch() {
 
-    let am =  localStorage.getItem('activeMatch');
-    if(am)
-      return JSON.parse(am);
+    // let am =  localStorage.getItem('activeMatch');
+    // if(am)
+    //   return JSON.parse(am);
 
     let {data:  activeMatch, error}  = await this.supaService.db
     .from('Matches')
     .select(`*, 
-      sport: Sports(name),
-      place: Places(name)
-    `)
-    .eq('active', true)
+      sport: Sports(name)`
+    ).eq('active', true)
     .single()
     
     if(error){

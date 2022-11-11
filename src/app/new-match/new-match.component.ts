@@ -3,7 +3,6 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { Match } from '../model/match';
 import { Player } from '../model/player';
 import { Sport } from '../model/sport';
-import { Place } from '../model/place';
 import { SupabaseService } from '../supabase.service';
 import { Router } from '@angular/router';
 import { NgbDate, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
@@ -26,8 +25,8 @@ export class NewMatchComponent {
 
 
   sports: Sport[]=[];
-  places: Place[]=[];
   availablePlayers: Player[]=[];
+  filteredPlayers: Player[]=[];
   
   selectedSport: Sport 
   name: string = ''
@@ -38,7 +37,7 @@ export class NewMatchComponent {
   videoPath:string = 'https://www.w3schools.com/html/mov_bbb.mp4'
 
   newPlayer:string = ''
-  searchPlayer:string = ''
+  searchPlayerText:string = ''
   videoLoaded = false;
 
   user_id: string
@@ -50,6 +49,7 @@ export class NewMatchComponent {
     this.hour = today.getHours(),
     await this.getSports();
     await this.getAvailablePlayers();
+    this.searchPlayerChange(null);
   }
 
   async getSports() {
@@ -61,6 +61,13 @@ export class NewMatchComponent {
 
   async getAvailablePlayers() {
     this.availablePlayers=await this.supaSvc.getMany('Players',`*`);;
+  }
+
+  searchPlayerChange(e){
+    if(this.searchPlayerText == '')
+      this.filteredPlayers = [...this.availablePlayers]
+    else
+      this.filteredPlayers = [...this.availablePlayers.filter(x=>x.name.toLowerCase().indexOf(this.searchPlayerText.toLocaleLowerCase()) > -1)]
   }
 
   async addPlayer(){
@@ -84,18 +91,21 @@ export class NewMatchComponent {
   }
 
   confirmPlayer(p: Player) {
-    if(this.matchPlayers.some(x=>x.playerId == p.playerId)){
-      alert(p.name + ' ya fue agregado y no puede jugar por dos. No es tan bueno.')
-      return;
-    }
-
+    // if(this.matchPlayers.some(x=>x.playerId == p.playerId)){
+    //   alert(p.name + ' ya fue agregado y no puede jugar por dos. No es tan bueno.')
+    //   return;
+    // }
     this.matchPlayers.push(p);
+    const idx = this.availablePlayers.findIndex(x=>x.playerId === p.playerId);
+    this.availablePlayers.splice(idx,1);
+    this.searchPlayerChange(null);
   }
   
   unconfirmPlayer(p: Player) {
-    let idx = this.matchPlayers.findIndex(x=>x.playerId === p.playerId);
-    if(idx > -1 )
-      this.matchPlayers.splice(idx, 1);
+    const idx = this.matchPlayers.findIndex(x=>x.playerId === p.playerId);
+    this.matchPlayers.splice(idx, 1);
+    this.availablePlayers.push(p);
+    this.searchPlayerChange(null);
   }
 
   async loadVideo() {

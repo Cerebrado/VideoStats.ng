@@ -17,10 +17,11 @@ import { NewEventComponent } from './new-event/new-event.component';
 import { InputBoxComponent } from './input-box/input-box.component';
 import { NewMatchComponent } from './new-match/new-match.component';
 import { EventsPanelComponent } from './events-panel/events-panel.component';
+import { NewSportComponent } from './new-sport/new-sport.component';
   
 @NgModule({
   imports: [BrowserModule, FormsModule, NgbModule, AppRoutingModule],
-  declarations: [							
+  declarations: [								
     AppComponent,
     VideoComponent,
     CourtComponent,
@@ -31,7 +32,8 @@ import { EventsPanelComponent } from './events-panel/events-panel.component';
     NewEventComponent,
     SettingsComponent,
     NewMatchComponent,
-      EventsPanelComponent
+      EventsPanelComponent,
+      NewSportComponent
    ],
   bootstrap: [AppComponent],
 })
