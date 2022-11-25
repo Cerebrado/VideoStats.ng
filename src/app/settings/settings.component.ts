@@ -9,6 +9,7 @@ import { InputBoxComponent } from '../input-box/input-box.component'
 
 import { SupabaseService } from '../supabase.service'
 import { SupabaseClient } from '@supabase/supabase-js'
+import { SportScore } from '../model/sportScore'
 
 
 
@@ -20,21 +21,16 @@ export class SettingsComponent implements OnInit {
 
   sports: Sport[]=[]
   selectedSport: Sport | null
-  
-  finalScoreSlots= 1
-  finalScoreMode= 0
-  finalScoreValues:string[]= ['1','+1']
-  newFinalScoreValueModifier= 0
-  newFinalScoreValue= ''
 
-  partialScoreSlots= 1
-  partialScoreMode= 0
-  partialScoreValues:string[] = [];
-  newPartialScoreValueModifier = 0
-  newPartialScoreValue= ''
+  newEvent:string = ''
+  newEventBalance:number = 0
 
   players: Player[]=[]
   newPlayer:string = ''
+
+  newScore: string
+  newScoreValueModifier: number = 0
+  newScoreValue: string
 
   DB: SupabaseClient
   user_id:string; 
@@ -50,9 +46,9 @@ export class SettingsComponent implements OnInit {
   }
 
   async getSports() {
-    this.sports = await this.supaSvc.getMany('Sports',`*, SportEvents: Events(*)`);
+    this.sports = await this.supaSvc.getMany('Sports','*');
     if(this.sports.length > 0)
-      this.selectedSport =this.sports[0]
+    this.selectedSport = this.sports[0]
   }
 
   async addSport(){
@@ -61,7 +57,8 @@ export class SettingsComponent implements OnInit {
     modal.componentInstance.title = "Sport"
     modal.result
       .then(async (result:string) => {
-        let {data, error} = await this.DB.from('Sports').insert({name: result, user_id: this.user_id}).single()
+        const score:SportScore = {name: 'Final', slots:1, sequence:[], buttons:[] }
+        let {data, error} = await this.DB.from('Sports').insert({name: result, user_id: this.user_id, events: [], scores:[score]}).single()
         if(error){
           alert('Cannot insert sport, check console') 
           console.log(error)
@@ -72,7 +69,6 @@ export class SettingsComponent implements OnInit {
         this.selectedSport = data;
       })
   }
-
 
   async deleteSport(){
     if(this.selectedSport == null)
@@ -99,79 +95,64 @@ export class SettingsComponent implements OnInit {
     this.sports.splice(idx, 1);
   }     
 
-
   addEvent(){
     if(this.selectedSport == null)
       return
-
-    const modal = this.modalService.open(NewEventComponent)
-    modal.componentInstance.sportId = this.selectedSport.sportId
-    
-    modal.result
-      .then(async (result:SportEvent) => {
-      let {data, error} = await this.DB.from('Events').insert({sportId: this.selectedSport.sportId,  name: result.name, balance: result.balance, user_id: this.user_id}).single()
-      if(error){
-        alert('Cannot insert event, check console') 
-        console.log(error)
-        return;
-      }
-      this.selectedSport.SportEvents.push(data);
-    })
+    this.selectedSport.events.push({name: this.newEvent, balance: this.newEventBalance})
+    this.newEvent = '';
   }
 
-
   async deleteEvent(idx: number){
-    if(!confirm('You will delete the event and statistics associated. Continue?'))
-      return;
-    const event = this.selectedSport.SportEvents[idx];
-    let {data, error} = await  this.DB.from('Events').delete().eq('eventId', event.eventId)
+    this.selectedSport.events.splice(idx, 1);
+  }
+
+  async addScore(){
+    if(this.selectedSport == null)
+    return
+
+    this.selectedSport.scores.push({name:this.newScore, slots:1, sequence:[], buttons:[]})
+  }
+
+  addScoreValue(scoreIdx, sequenceOrButton){
+    let modifier=''
+    if(this.newScoreValueModifier === 1)
+    {
+      modifier='+'
+    }
+    else if(this.newScoreValueModifier === -1)
+    {
+      modifier='-'
+    }
+
+    if(sequenceOrButton === 's'){
+      this.selectedSport.scores[scoreIdx].sequence.push(modifier + this.newScoreValue)
+    }else{
+      this.selectedSport.scores[scoreIdx].buttons.push(modifier + this.newScoreValue)
+    }
+  }
+
+  deleteScoreValue(scoreIdx, sequenceOrButton, valueIdx){
+    if(sequenceOrButton === 's'){
+      this.selectedSport.scores[scoreIdx].sequence.splice(valueIdx,1);
+    } else {
+      this.selectedSport.scores[scoreIdx].buttons.splice(valueIdx,1);
+    }
+  }
+
+  async saveSport(){
+    let {data, error} = await this.DB
+    .from('Sports')
+    .update({events: this.selectedSport.events, scores: this.selectedSport.scores})
+    .eq('user_id', this.user_id)
+    .eq('sportId', this.selectedSport.sportId)
+    .select() 
     if(error){
-      alert('Cannot delete event, check console') 
+      alert('Cannot update sport, check console') 
       console.log(error)
       return;
     }
-    this.selectedSport.SportEvents.splice(idx, 1);
+
   }
-
-  addFinalScoreValue(){
-    let modifier=''
-    if(this.newFinalScoreValueModifier === 1)
-    {
-      modifier='+'
-    }
-    else if(this.newFinalScoreValueModifier === 1)
-    {
-      modifier='-'
-    }
-
-    this.finalScoreValues.push(modifier + this.newFinalScoreValue);
-  }
-
-  deleteFinalScoreValue(value){
-    var idx = this.finalScoreValues.findIndex(x=>x == value);
-    this.finalScoreValues.splice(idx, 1);
-  }
-
-
-  addPartialScoreValue(){
-    let modifier=''
-    if(this.newPartialScoreValueModifier === 1)
-    {
-      modifier='+'
-    }
-    else if(this.newPartialScoreValueModifier === 1)
-    {
-      modifier='-'
-    }
-
-    this.partialScoreValues.push(modifier + this.newPartialScoreValue);
-  }
-
-  deletePartialScoreValue(value){
-    var idx = this.partialScoreValues.findIndex(x=>x == value);
-    this.partialScoreValues.splice(idx, 1);
-  }
-
 
   async getPlayers() {
     this.players = await this.supaSvc.getMany('Players', '*')

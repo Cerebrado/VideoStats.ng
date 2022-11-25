@@ -135,7 +135,7 @@ export class NewMatchComponent {
       name: this.name,
       active: true,
       players: this.matchPlayers,
-      events: this.selectedSport.SportEvents,
+      events: this.selectedSport.events,
       year: this.ngdate.year,
       month: this.ngdate.month -1,
       day: this.ngdate.day,
