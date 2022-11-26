@@ -27,7 +27,7 @@ export class EventsPanelComponent implements OnInit {
 
 
   getEventsByBalance(b){
-    return this.activeMatch?.events.filter(x=>x.balance == b);
+    return this.activeMatch?.sport.events.filter(x=>x.balance == b);
   }
 
   eventsInputs = []

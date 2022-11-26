@@ -53,7 +53,7 @@ export class NewMatchComponent {
   }
 
   async getSports() {
-    this.sports = await this.supaSvc.getMany('Sports',`*, SportEvents: Events(*)`);
+    this.sports = await this.supaSvc.getMany('Sports',`*`);
 
     if(this.sports.length > 0)
       this.selectedSport = this.sports[0]
@@ -91,10 +91,6 @@ export class NewMatchComponent {
   }
 
   confirmPlayer(p: Player) {
-    // if(this.matchPlayers.some(x=>x.playerId == p.playerId)){
-    //   alert(p.name + ' ya fue agregado y no puede jugar por dos. No es tan bueno.')
-    //   return;
-    // }
     this.matchPlayers.push(p);
     const idx = this.availablePlayers.findIndex(x=>x.playerId === p.playerId);
     this.availablePlayers.splice(idx,1);
@@ -120,7 +116,7 @@ export class NewMatchComponent {
 
   async btnConfirmNewMatchClick() {
     if(this.selectedSport == null || this.name == '' || this.matchPlayers.length == 0){
-      alert('Debe elegir un deporte, e ingresar un nombre y jugadores');
+      alert('Debe elegir un deporte, jugadores e ingresar una descripción');
       return;
     }
     
@@ -129,13 +125,11 @@ export class NewMatchComponent {
       console.log(errorUpdating)
     }
 
-    const newMatch: Match = {
-      matchId: 0,
-      sportId: this.selectedSport.sportId,
+    const newMatch = {
+      sport: this.selectedSport,
       name: this.name,
       active: true,
       players: this.matchPlayers,
-      events: this.selectedSport.events,
       year: this.ngdate.year,
       month: this.ngdate.month -1,
       day: this.ngdate.day,

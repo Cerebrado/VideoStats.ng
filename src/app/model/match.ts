@@ -1,14 +1,11 @@
 import { Player } from "./player"
 import { Sport } from "./sport"
-import { SportEvent } from "./sportEvent"
 
 export type Match = {
     matchId: number, 
-    sportId: number
-    sport?: Sport,
+    sport: Sport,
     active: boolean,
     players: Player[],
-    events: SportEvent[]
     name: string
     videoPath: string
     year: number,
