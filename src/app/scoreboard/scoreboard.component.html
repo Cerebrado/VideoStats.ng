@@ -1,0 +1,49 @@
+<ng-template #resultsVisibility>
+  <table>
+    <tr *ngFor="let s of results[0].scores">
+      <td>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" [(ngModel)]="s.visible" [id]="s.name">
+          <label class="form-check-label" [for]="s.name">
+            {{s.name}}
+          </label>
+        </div>
+      </td>
+    </tr>
+  </table>
+</ng-template>
+
+<div class="d-flex flex-row mt-2 border border-secondary">
+  <div>
+    <span class="material-icons"
+      role="button"
+      [ngbPopover]="resultsVisibility" 
+      [autoClose]="'outside'"
+      triggers="manual"
+      #p="ngbPopover"
+      (click)="p.open()"
+    >
+      rule
+    </span>
+  </div>
+
+  <ng-container *ngFor="let score of results[0]?.scores; let scoreIdx=index">
+    <div *ngIf="score.visible" class="p-2 mx-1 w-100">
+      <span class="card-title">{{score.name}}</span>
+      <table class="table table-sm table-borderless" style="width:100%">
+        <tr *ngFor="let team of results; let teamIdx = index">
+          <td *ngFor="let x of team.scores[scoreIdx].slots; let slotIdx = index"
+            class="btn-outline-dark border border-secondary text-center"
+            (click)="setSequenceResult($event, teamIdx, scoreIdx, slotIdx)">
+            0
+          </td>
+        </tr>
+      </table>
+    </div>
+  </ng-container>
+</div>
+
+
+ 
+
+

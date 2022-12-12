@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Input,
   Output,
   ViewChild,
 } from '@angular/core';
@@ -33,7 +34,8 @@ export class VideoComponent implements AfterViewInit{
   canvasControlPos = {x:0, y:0}
   
   ctx: CanvasRenderingContext2D;
-
+  @Input()
+  src:string;
   constructor() {
     window.onresize = (e) => this.resizeVideo();
   }
@@ -41,7 +43,8 @@ export class VideoComponent implements AfterViewInit{
   observer: MutationObserver
 
   ngAfterViewInit(): void {
-    this.ctx = this.canvas.getContext('2d')
+    this.ctx = this.canvas.getContext('2d', {willReadFrequently:true})
+    //this.ctx.willReadFrequently = true;
     this.canvas.style.left = this.videoPlayer.clientLeft.toString()
     this.canvas.style.top = this.videoPlayer.clientTop.toString()
     this.canvasControlPos = this.GetScreenCordinates(this.canvas);
@@ -73,20 +76,26 @@ export class VideoComponent implements AfterViewInit{
 
   }
 
+  playPromise: Promise<void>
   pause(){
     this.isPlaying = false
+    this.playPromise = this.videoPlayer.play();
   }
 
   play(){
     this.isPlaying = true
+    if(this.playPromise !== undefined){
+      this.playPromise.then(_ => {
+        this.videoPlayer.pause();
+      })
+    }
   }
+
 
   playPause() {
     if (this.videoPlayer.paused) {
-      this.videoPlayer.play();
       this.play();
     } else {
-      this.videoPlayer.pause();
       this.pause();
     }
   }

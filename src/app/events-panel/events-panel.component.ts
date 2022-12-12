@@ -14,24 +14,24 @@ export class EventsPanelComponent implements OnInit {
 
   constructor(Supasvc:SupabaseService) { }
 
-  ngOnInit() {
-    this.isLoading = false
-  }
   isLoading = true
-  @Input() activeMatch: Match
+  @Input() activeMatch: Match 
   @Input() videoTime: number
   errorMsg = '';
-  results =  ["15","1","0","0","30","2","0","0"]
-  selectedResultIdx = null
-  possibleResultValues=["0","15","30","40", "A", "+1", "-1"]
+
+  eventsInputs = []
+  eventsHistory = [];
+
+
+  ngOnInit() {
+    this.isLoading = false
+    
+  }
 
 
   getEventsByBalance(b){
     return this.activeMatch?.sport.events.filter(x=>x.balance == b);
   }
-
-  eventsInputs = []
-  eventsHistory = [];
 
   selectPlayer(p: Player){
     if(this.eventsInputs.length > 0
@@ -65,24 +65,27 @@ export class EventsPanelComponent implements OnInit {
     }
   }
 
-  setResult(value){
-    if(this.selectedResultIdx === null){
-      this.errorMsg = "Primero Seleccione la casilla de resultados que desea modificar / First select the cell of results you want to modofy"
-      return;
-    }
 
-    if(value.startsWith("+") || value.startsWith("-") ){
-      if(isNaN(Number(this.results[this.selectedResultIdx]))) {
-        this.errorMsg = "No es un número / It is not a number"
-        return;
-      }
-      const currentResultValue = parseInt(this.results[this.selectedResultIdx])
-      this.results[this.selectedResultIdx] = (currentResultValue + parseInt(value)).toString()
-    } 
-    else{
-      this.results[this.selectedResultIdx] = value;
-    }
-  }
+
+
+  // setResult(value){
+  //   if(this.selectedResultIdx === null){
+  //     this.errorMsg = "Primero Seleccione la casilla de resultados que desea modificar / First select the cell of results you want to modofy"
+  //     return;
+  //   }
+
+  //   if(value.startsWith("+") || value.startsWith("-") ){
+  //     if(isNaN(Number(this.results[this.selectedResultIdx]))) {
+  //       this.errorMsg = "No es un número / It is not a number"
+  //       return;
+  //     }
+  //     const currentResultValue = parseInt(this.results[this.selectedResultIdx])
+  //     this.results[this.selectedResultIdx] = (currentResultValue + parseInt(value)).toString()
+  //   } 
+  //   else{
+  //     this.results[this.selectedResultIdx] = value;
+  //   }
+  // }
   
 
   saveRow(){

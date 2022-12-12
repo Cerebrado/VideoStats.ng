@@ -35,9 +35,8 @@ export class HomeComponent implements OnInit {
 
     let {data:  activeMatch, error}  = await this.supaService.db
     .from('Matches')
-    .select(`*, 
-      sport: Sports(name)`
-    ).eq('active', true)
+    .select(`*`)
+    .eq('active', true)
     .single()
     
     if(error){

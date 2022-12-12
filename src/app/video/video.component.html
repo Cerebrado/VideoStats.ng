@@ -1,17 +1,20 @@
   <div style="position:relative; overflow: hidden;">
     <video 
       id="video"
-      style="width:100%;"
+      preload="none"
+      role="application"
+      style="width:100%"
       (onresize)="resizeVideo()"
       #videoPlayer
       controlslist="nodownload nofullscreen noremoteplayback"
       (timeupdate)="timeUpdate($event)"
       (pause) = "pause()"
       (play) = "play()"
+      poster="https://thumbnails.padelgo.tv/BzPV7JnMjmF.jpg"
     >
       <source
-        src="https://www.w3schools.com/html/mov_bbb.mp4"
-        type="video/mp4"
+        [src]="src"
+        type="application/x-mpegUrl"
       />
       Your browser does not support HTML video.
     </video>

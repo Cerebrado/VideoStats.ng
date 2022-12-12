@@ -2,7 +2,7 @@
   Loading...
 </div>
 <div class="container-fluid">
-  <div class="d-flex flex-row mb-3">
+  <div class="d-flex flex-row mb-2">
     <div *ngFor="let p of activeMatch?.players; let i = index" 
       class="p-2 mx-1 btn my-1 w-100" 
       [ngClass]="i < activeMatch?.players.length / 2 ? 'btn-outline-dark':'btn-outline-primary'" 
@@ -12,13 +12,13 @@
     </div>
 
   </div>
-  <div class="d-flex flex-row mb-3"  *ngFor="let i of [1,0,-1]">
+  <div class="d-flex flex-row mb-1"  *ngFor="let i of [1,0,-1]">
     <div class="p-2 mx-1 btn my-1 w-100" [ngClass]="i == 1 ? 'btn-success': (i==0 ? 'btn-warning' : 'btn-danger')" (click)="selectEvent(e)" *ngFor="let e of getEventsByBalance(i)" >
       {{e.name}}
     </div>
   </div>
-  <div class="d-flex justify-content-between flex-nowrap mb-3">
-    <div class="d-flex justify-content-start flex-wrap list-group-horizontal" style="border:1px solid grey; width:100%">
+  <div class="d-flex justify-content-between flex-nowrap mb-2">
+    <div class="d-flex justify-content-start flex-wrap list-group-horizontal border border-secondary w-100">
       <div *ngFor="let e of eventsInputs" class="d-flex justify-content-start flex-wrap list-group-horizontal" style="border:1px solid grey; width:100%">
         <li class="list-group-item list-group-item-dark">{{e.player.name}}</li>
         <li  class="list-group-item" *ngFor="let e of e.events">{{e.name}}</li>
@@ -26,44 +26,17 @@
     </div>
     <button class="btn btn-secondary" (click)="undo()"><span class="material-icons">undo</span></button>
   </div>
-  <div class="d-flex flex-nowrap mb-2 mt-1">
-    <textarea class="form-control" placeholder="Comment" rows="4" style="border:1px solid black"></textarea>
-    <div class="d-flex flex-fill flex-column ml-2">
-      <table class="table table-sm table-borderless" style="width:100%">
-        <tr *ngFor="let r of [0,1]">
-          <td
-            style="width:20%; border:1px solid black;text-align: center"
-            [ngClass]="selectedResultIdx===r*4 ?'btn-primary': 'btn-outline-dark'" 
-            (click)="selectedResultIdx=r*4">
-            {{results[r*4]}}
-          </td>
-          <td style="width:20%;text-align: center">
-            -
-          </td>    
-          <td *ngFor="let i of [1,2,3]" 
-          style="width:20%; border:1px solid black;text-align: center"
-          [ngClass]="selectedResultIdx===(r*4)+i ?'btn-primary': 'btn-outline-dark'" 
-            (click)="selectedResultIdx=(r*4)+i">
-            {{results[(r*4)+i]}}
-          </td>
-        </tr>
-      </table>
-      <div class="btn-group" role="group">
-        <button class="btn btn-sm btn-outline-dark" *ngFor="let v of possibleResultValues; let i = index"  
-          (click)="setResult(v)">{{possibleResultValues[i]}}
-        </button>
-      </div>
+  <app-scoreboard [activeMatch]="activeMatch"></app-scoreboard>
+  <div class="d-flex justify-content-between flex-nowrap mt-2">
+    <div class="d-flex justify-content-start flex-wrap list-group-horizontal" style=" width:100%">
+      <textarea class="form-control" placeholder="Comment" rows="2" style="border:1px solid grey"></textarea>
     </div>
-    <button class="btn btn-primary ml-2" (click)="saveRow()"><span class="material-icons">done</span></button>
+    <button class="btn btn-primary" (click)="saveRow()"><span class="material-icons">done</span></button>
   </div>
-  <div class="d-flex mb-3">
-    <div class="card">
-      <div class="card-body">
-        <ul class="list-group">
-          <li class="list-group-item" *ngFor="let e of eventsHistory.reverse()">{{e.description}}</li>
-        </ul>
-      </div>
-    </div>
+  <div class="d-flex mt-2">
+    <ul class="list-group">
+      <li class="list-group-item" *ngFor="let e of eventsHistory.reverse()">{{e.description}}</li>
+    </ul>
   </div>
 </div>
 
