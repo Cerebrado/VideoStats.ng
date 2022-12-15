@@ -1,7 +1,9 @@
 export type SportScore = {
     name: string
     slots: number
-    sequence: string[]
-    buttons: string []
+    type: string 
+    values: string[]
+    showAsButtons: boolean
+    visibleAtBeggining: boolean
 }
   

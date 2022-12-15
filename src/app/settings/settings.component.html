@@ -1,3 +1,4 @@
+
 <div class="mh-100">    
   <div class="modal-header">
     <h5>Settings</h5>
@@ -41,9 +42,7 @@
                     <tr style="cursor: pointer" *ngFor="let e of selectedSport?.events; let i = index">
                       <td width="95%">({{ e.balance == 1? "+": (e.balance == -1? "-" : 0) }}) {{ e.name }}</td>
                       <td>
-                        <button class="btn btn-outline-danger btn-sm mx-4" (click)="deleteEvent(i)">
-                          <span class="material-icons pull-right">close</span>
-                        </button>
+                        <button class="btn btn-outline-danger" (click)="deleteEvent(i)">X</button>
                       </td>
                     </tr>
                   </table>
@@ -52,61 +51,36 @@
               <div class="card ml-2">
                 <div class="card-header input-group">
                   <h5>Scores</h5>
-                  <input type="text" class="form-control mx-1" placeholder="new partial"  [(ngModel)]="newScore" />
                   <button
-                    class="btn btn-outline-primary btn-sm "
+                    class="btn btn-outline-primary btn-sm ml-1"
                     type="button"
                     (click)="addScore()"><span class="material-icons">add</span>
                   </button>
                 </div>
                 <div class="card-body">
-                  <div *ngFor="let score of selectedSport?.scores; let scoreIndex=index">
-                    <h5><u>{{score.name}}</u></h5>
-                    <div class="input-group">
-                      <label class="input-group-text">Slots</label>
-                      <select class="form-select form-control"  [(ngModel)]="score.slots">
-                        <option *ngFor="let s of [1,2,3,4,5,6,7,8,9,10]" [ngValue]="s">{{s}}</option>
-                      </select>
+                  <div *ngFor="let score of selectedSport?.scores; let scoreIdx=index">
+                    <div class="card-title d-flex justify-content-between">
+                      <h5 (click)="editScore(scoreIdx)" role="button"><u>{{score.name}}</u></h5>
+                      <button class="btn btn-outline-danger" (click)="deleteScore(scoreIdx)">X</button>
                     </div>
-                    <div class="input-group mt-1">
-                      <label class="input-group-text">Values</label>
-                      <select class="form-select form-control"  [(ngModel)]="newScoreValueModifier">
-                        <option [ngValue]="0">=</option>
-                        <option [ngValue]="1">+</option>
-                        <option [ngValue]="-1">-</option>
-                      </select>
-                      <input class="form-control" [(ngModel)]="newScoreValue" />
-                      <button
-                        class="btn btn-outline-primary btn-sm "
-                        type="button"
-                        (click)="addScoreValue(scoreIndex, 's')">+S</button>
-                      <button
-                        class="btn btn-outline-primary btn-sm "
-                        type="button"
-                        (click)="addScoreValue(scoreIndex, 'b')">+B</button>
+                    <div class="card-title d-flex justify-content-between">
+                      <span>Slots: {{score.slots}}</span>
+                      <span>Type: {{score.type}}</span>
                     </div>
                     <div class="d-flex justify-content-start flex-wrap list-group-horizontal mt-1" style="width:100%">
-                      <h6>Sequence: </h6>
-                      <h5 *ngFor="let v of score.sequence; let valueIdx = index">
-                        <span (click)="deleteScoreValue(scoreIndex, 's', valueIdx)" class="badge rounded-pill bg-dark ml-1 text-light">{{v}}</span>
-                      </h5>
-                    </div>
-                    <div class="d-flex justify-content-start flex-wrap list-group-horizontal mb-1" style="width:100%">
-                      <h6>Buttons: </h6>
-                      <h5 *ngFor="let v of score.buttons; let valueIdx = index">
-                        <span  (click)="deleteScoreValue(scoreIndex,'b', valueIdx)" class="badge rounded-pill bg-dark ml-1 text-light">{{v}}</span>
+                      <span>Values:</span>
+                      <h5 *ngFor="let v of score.values">
+                        <span class="badge rounded-pill bg-dark ml-1 text-light">{{v}}</span>
                       </h5>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="card-footer">
-              <button class="btn btn-primary" (click)="saveSport()">Save</button>
-            </div>
           </div>
         </div>
       </div>        
+      
       <div class="col-6">
         <div class="card">
           <div class="card-header input-group">
@@ -118,11 +92,9 @@
               (click)="addPlayer()"><span class="material-icons">add</span>
             </button>
           </div>
-
           <div class="card-body">
-            <table class="table table-sm">
+            <table class="table table-sm table-striped">
               <tr
-                style="cursor: pointer"
                 *ngFor="let p of players; let i = index"
               >
                 <td width="95%">{{ p.name }}</td>

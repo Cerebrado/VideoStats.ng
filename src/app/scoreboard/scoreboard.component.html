@@ -34,8 +34,8 @@
         <tr *ngFor="let team of results; let teamIdx = index">
           <td *ngFor="let x of team.scores[scoreIdx].slots; let slotIdx = index"
             class="btn-outline-dark border border-secondary text-center"
-            (click)="setSequenceResult($event, teamIdx, scoreIdx, slotIdx)">
-            0
+            (click)="setResult($event, teamIdx, scoreIdx, slotIdx, null)">
+              {{results[teamIdx].scores[scoreIdx].slots[slotIdx]}}
           </td>
         </tr>
       </table>

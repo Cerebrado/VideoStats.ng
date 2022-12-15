@@ -10,6 +10,8 @@ import { InputBoxComponent } from '../input-box/input-box.component'
 import { SupabaseService } from '../supabase.service'
 import { SupabaseClient } from '@supabase/supabase-js'
 import { SportScore } from '../model/sportScore'
+import { runInThisContext } from 'vm'
+import { EditScoreComponent } from '../edit-score/edit-score.component'
 
 
 
@@ -27,10 +29,6 @@ export class SettingsComponent implements OnInit {
 
   players: Player[]=[]
   newPlayer:string = ''
-
-  newScore: string
-  newScoreValueModifier: number = 0
-  newScoreValue: string
 
   DB: SupabaseClient
   user_id:string; 
@@ -57,8 +55,7 @@ export class SettingsComponent implements OnInit {
     modal.componentInstance.title = "Sport"
     modal.result
       .then(async (result:string) => {
-        const score:SportScore = {name: 'Final', slots:1, sequence:[], buttons:[] }
-        let {data, error} = await this.DB.from('Sports').insert({name: result, user_id: this.user_id, events: [], scores:[score]}).single()
+        let {data, error} = await this.DB.from('Sports').insert({name: result, user_id: this.user_id, events: [], scores:[]}).single()
         if(error){
           alert('Cannot insert sport, check console') 
           console.log(error)
@@ -107,36 +104,46 @@ export class SettingsComponent implements OnInit {
   }
 
   async addScore(){
-    if(this.selectedSport == null)
-    return
-
-    this.selectedSport.scores.push({name:this.newScore, slots:1, sequence:[], buttons:[]})
+    let newScore: SportScore = {
+      name: '', 
+      slots: 1,
+      type: '+/-',
+      values: [],
+      showAsButtons: false,
+      visibleAtBeggining: true,
+    };
+    const modal = this.modalService.open(EditScoreComponent, { size: 'lg' })
+    modal.componentInstance.score = newScore;
+    modal.result
+      .then(async (score:SportScore) => {
+        this.selectedSport.scores.push(score)
+        this.saveSport();
+      })
   }
 
-  addScoreValue(scoreIdx, sequenceOrButton){
-    let modifier=''
-    if(this.newScoreValueModifier === 1)
-    {
-      modifier='+'
-    }
-    else if(this.newScoreValueModifier === -1)
-    {
-      modifier='-'
+  editScore(scoreIdx){
+    let editScore: SportScore =  {
+      name: this.selectedSport.scores[scoreIdx].name, 
+      slots: this.selectedSport.scores[scoreIdx].slots,
+      type: this.selectedSport.scores[scoreIdx].type,
+      values: [...this.selectedSport.scores[scoreIdx].values],
+      showAsButtons: this.selectedSport.scores[scoreIdx].showAsButtons,
+      visibleAtBeggining: this.selectedSport.scores[scoreIdx].visibleAtBeggining,
     }
 
-    if(sequenceOrButton === 's'){
-      this.selectedSport.scores[scoreIdx].sequence.push(modifier + this.newScoreValue)
-    }else{
-      this.selectedSport.scores[scoreIdx].buttons.push(modifier + this.newScoreValue)
-    }
+
+    const modal = this.modalService.open(EditScoreComponent,  { size: 'lg' })
+    modal.componentInstance.score = editScore;
+    modal.result
+      .then(async (score:SportScore) => {
+        this.selectedSport.scores[scoreIdx] = editScore;
+        this.saveSport();
+      })
   }
 
-  deleteScoreValue(scoreIdx, sequenceOrButton, valueIdx){
-    if(sequenceOrButton === 's'){
-      this.selectedSport.scores[scoreIdx].sequence.splice(valueIdx,1);
-    } else {
-      this.selectedSport.scores[scoreIdx].buttons.splice(valueIdx,1);
-    }
+  deleteScore(scoreIdx){
+    this.selectedSport.scores.splice(scoreIdx,1);
+    this.saveSport();
   }
 
   async saveSport(){
