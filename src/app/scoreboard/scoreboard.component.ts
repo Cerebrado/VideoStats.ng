@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Match } from '../model/match';
 import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
+import { ReturnStatement } from '@angular/compiler';
 
 @Component({
   selector: 'app-scoreboard',
@@ -9,6 +10,12 @@ import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 export class ScoreboardComponent implements OnInit {
 
   constructor() { }
+
+  
+  ngOnInit() {
+  }
+
+  JSON = JSON;
 
   private _activeMatch: Match;
   @Input() 
@@ -23,7 +30,7 @@ export class ScoreboardComponent implements OnInit {
   }
 
   results =  []
-  selectedResultIdx = null
+  selectedResultIdxs =[-1,-1,-1]
 
   initResults(){
     this.results.push(
@@ -31,7 +38,6 @@ export class ScoreboardComponent implements OnInit {
       {team: 1,scores:[]},
     );
     this.activeMatch?.sport.scores.forEach(score => {
-      
       this.results[0].scores.push(this.getNewResultScore(score));
       this.results[1].scores.push(this.getNewResultScore(score));
     });
@@ -40,10 +46,8 @@ export class ScoreboardComponent implements OnInit {
   getNewResultScore(score){
     let firstValidValue = this.getScoreInitialValue(score);
       return {
-      name: score.name,
-      visible: score.visibleAtBeggining,
       slots: Array(score.slots).fill(firstValidValue),
-      valueIdx: 0
+      valueIdx: 0,
     }
   }
 
@@ -59,44 +63,58 @@ export class ScoreboardComponent implements OnInit {
     return score.values[0];
   }
 
-  setResult(mouseEvent:MouseEvent, teamIdx, scoreIdx, slotIdx, valueToSet){
+  clickResult(mouseEvent:MouseEvent, teamIdx, scoreIdx, slotIdx){
     mouseEvent.preventDefault();
     mouseEvent.stopPropagation();
-    const scoreDef = this.activeMatch.sport.scores[scoreIdx];
+    this.selectedResultIdxs =[teamIdx, scoreIdx, slotIdx]
+
+    if(!this.activeMatch?.sport.scores[scoreIdx].showAsButtons)
+    {
+      this.setSequenceValue(mouseEvent, teamIdx, scoreIdx, slotIdx)
+    }
+  }
+
+  setSequenceValue(mouseEvent:MouseEvent, teamIdx, scoreIdx, slotIdx){
     const scoreResult = this.results[teamIdx].scores[scoreIdx];
-    if(valueToSet){
-      scoreResult.slots[slotIdx] = valueToSet;
+    const scoreDef = this.activeMatch.sport.scores[scoreIdx];
+
+    if(scoreDef.type==='+/-'){
+      if(!mouseEvent.ctrlKey){ //move to right
+        scoreResult.slots[slotIdx] = (parseInt(scoreResult.slots[slotIdx])+1).toString();  
+      }else {
+        scoreResult.slots[slotIdx] = (parseInt(scoreResult.slots[slotIdx])-1).toString();  
+      }
+    } else{ //type 'values'
+      if(!mouseEvent.ctrlKey){ //move to right
+        if(scoreResult.valueIdx === scoreDef.values.length-1){
+          scoreResult.valueIdx = 0;
+        }else{
+          scoreResult.valueIdx = scoreResult.valueIdx +1;
+        }
+      }else{ //move to left
+        if(scoreResult.valueIdx === 0){
+          scoreResult.valueIdx = scoreDef.values.length-1
+        }else{
+          scoreResult.valueIdx = scoreResult.valueIdx -1
+        }
+      }
+      scoreResult.slots[slotIdx] = scoreDef.values[scoreResult.valueIdx];
+    }
+  }
+
+  setResultValue(v:string){
+    if(this.selectedResultIdxs[0] == -1){
       return;
     }
 
-    //it's a sequence
-      if(scoreDef.type==='+/-'){
-        if(!mouseEvent.ctrlKey){ //move to right
-          scoreResult.slots[slotIdx] = (parseInt(scoreResult.slots[slotIdx])+1).toString();  
-        }else if(scoreResult.slots[slotIdx] > 0) {
-          scoreResult.slots[slotIdx] = (parseInt(scoreResult.slots[slotIdx])-1).toString();  
-        }
-      } else{ //type 'values'
-        if(!mouseEvent.ctrlKey){ //move to right
-          if(scoreResult.valueIdx === scoreDef.values.length-1){
-            scoreResult.valueIdx = 0;
-          }else{
-            scoreResult.valueIdx = scoreResult.valueIdx +1;
-          }
-        }else{ //move to left
-          if(scoreResult.valueIdx === 0){
-            scoreResult.valueIdx = scoreDef.values.length-1
-          }else{
-            scoreResult.valueIdx = scoreResult.valueIdx -1
-          }
-        }
-        scoreResult.slots[slotIdx] = scoreDef.values[scoreResult.valueIdx];
-      }
+    const scoreResult = this.results[this.selectedResultIdxs[0]].scores[this.selectedResultIdxs[1]];
+    const currentValue =  scoreResult.slots[this.selectedResultIdxs[2]]
+    let increment = v.replace('+','').replace('-','');    
+    if(v.startsWith('+'))
+      scoreResult.slots[this.selectedResultIdxs[2]] = (parseInt(scoreResult.slots[this.selectedResultIdxs[2]]) + parseInt(increment)).toString();
+    else if(v.startsWith('-'))
+      scoreResult.slots[this.selectedResultIdxs[2]] = (parseInt(scoreResult.slots[this.selectedResultIdxs[2]]) - parseInt(increment)).toString();
+    else
+      scoreResult.slots[this.selectedResultIdxs[2]] = v;
   }
-
-
-
-  ngOnInit() {
-  }
-
 }

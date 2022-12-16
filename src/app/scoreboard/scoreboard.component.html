@@ -1,12 +1,24 @@
 <ng-template #resultsVisibility>
-  <table>
-    <tr *ngFor="let s of results[0].scores">
+  <table class="table table-sm">
+    <tr>
+      <th>Score</th>
+      <th>Visible</th>
+      <th>Buttons?</th>
+    </tr>
+    <tr *ngFor="let s of activeMatch?.sport.scores">
+      <td>
+        <label class="form-check-label">
+          {{s.name}}
+        </label>
+      </td>
       <td>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" [(ngModel)]="s.visible" [id]="s.name">
-          <label class="form-check-label" [for]="s.name">
-            {{s.name}}
-          </label>
+          <input class="form-check-input" type="checkbox" [(ngModel)]="s.visibleAtBeggining">
+        </div>
+      </td>
+      <td>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" [(ngModel)]="s.showAsButtons">
         </div>
       </td>
     </tr>
@@ -27,21 +39,38 @@
     </span>
   </div>
 
-  <ng-container *ngFor="let score of results[0]?.scores; let scoreIdx=index">
-    <div *ngIf="score.visible" class="p-2 mx-1 w-100">
+  <ng-container *ngFor="let score of activeMatch?.sport.scores; let scoreIdx=index">
+    <div *ngIf="score.visibleAtBeggining" class="p-2 mx-1 w-100">
       <span class="card-title">{{score.name}}</span>
       <table class="table table-sm table-borderless" style="width:100%">
         <tr *ngFor="let team of results; let teamIdx = index">
-          <td *ngFor="let x of team.scores[scoreIdx].slots; let slotIdx = index"
-            class="btn-outline-dark border border-secondary text-center"
-            (click)="setResult($event, teamIdx, scoreIdx, slotIdx, null)">
-              {{results[teamIdx].scores[scoreIdx].slots[slotIdx]}}
+          <td role="button" *ngFor="let x of team.scores[scoreIdx].slots; let slotIdx = index"
+              class="text-center border border-secondary"
+              
+              [ngStyle]="{'background-color': JSON.stringify([teamIdx, scoreIdx, slotIdx]) === JSON.stringify(selectedResultIdxs) ?'#E8E8E8':''}"
+              (click)="clickResult($event, teamIdx, scoreIdx, slotIdx)">
+                {{results[teamIdx].scores[scoreIdx].slots[slotIdx]}}
+          </td>
+        </tr>
+        <tr>
+          <td cols="100">
+            <div *ngIf="score.showAsButtons" class="d-flex">
+              <button *ngFor="let v of activeMatch?.sport.scores[scoreIdx].values" 
+                (click)="setResultValue(v)" 
+                class="btn btn-sm btn-outline-dark ml-1 shadow-none"
+                [disabled]="selectedResultIdxs[1] !== scoreIdx"
+              >
+                {{v}}
+              </button>
+            </div>
+        
           </td>
         </tr>
       </table>
     </div>
   </ng-container>
 </div>
+
 
 
  
