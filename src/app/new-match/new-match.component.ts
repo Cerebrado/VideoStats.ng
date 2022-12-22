@@ -11,18 +11,13 @@ import { NgbDate, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './new-match.component.html',
 })
 export class NewMatchComponent {
+
   constructor(private supaSvc: SupabaseService, private router: Router) { 
     this.DB = supaSvc.db;
     this.user_id = supaSvc.getSession()?.user?.id as string
   }
 
-
-  videoPlayer: HTMLVideoElement;
-  @ViewChild('videoPlayer')
-  set mainVideoEl(el: ElementRef) {
-    this.videoPlayer = el.nativeElement;
-  }
-
+   @ViewChild('ytPlayer') ytPlayer: any;
 
   sports: Sport[]=[];
   availablePlayers: Player[]=[];
@@ -34,11 +29,11 @@ export class NewMatchComponent {
   hour: number 
   minutes: string = '00' 
   matchPlayers: Player[] = []
-  videoPath:string = 'https://www.w3schools.com/html/mov_bbb.mp4'
+  videoId:string = ''
 
   newPlayer:string = ''
   searchPlayerText:string = ''
-  videoLoaded = false;
+  videoIdValid = false;
 
   user_id: string
   DB: SupabaseClient
@@ -50,6 +45,11 @@ export class NewMatchComponent {
     await this.getSports();
     await this.getAvailablePlayers();
     this.searchPlayerChange(null);
+
+    //adding yt api here, instead of in index.html
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.body.appendChild(tag);
   }
 
   async getSports() {
@@ -105,16 +105,26 @@ export class NewMatchComponent {
   }
 
   async loadVideo() {
-    this.videoLoaded =true;
-    this.videoPlayer.src=this.videoPath;
-    this.videoPlayer.load();
+    this.ytPlayer.videoId = this.videoId;
   }
-
-  onvideoError(e){
-    this.videoLoaded = false;
+  onYTReady(){
+  }
+  onYTStateChange($event){
+  this.videoIdValid =this.ytPlayer.getDuration() > 0;
   }
 
   async btnConfirmNewMatchClick() {
+    if(this.videoId.trim()===''){
+      alert('Not video Id entered');
+      return;
+
+    }
+    
+    if(!this.videoIdValid){
+      alert('Invalid video Id ');
+      return;
+    }
+
     if(this.selectedSport == null || this.name == '' || this.matchPlayers.length == 0){
       alert('Debe elegir un deporte, jugadores e ingresar una descripción');
       return;
@@ -135,7 +145,7 @@ export class NewMatchComponent {
       day: this.ngdate.day,
       hour: this.hour,
       minutes: parseInt(this.minutes),
-      videoPath:this.videoPath,
+      videoPath:this.videoId,
       user_id: this.user_id
     }
 

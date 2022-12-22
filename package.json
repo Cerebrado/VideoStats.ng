@@ -18,6 +18,7 @@
     "@angular/platform-browser": "~13.1.0",
     "@angular/platform-browser-dynamic": "~13.1.0",
     "@angular/router": "~13.1.0",
+    "@angular/youtube-player": "^13.3.9",
     "@ng-bootstrap/ng-bootstrap": "^12.1.2",
     "@ng-bootstrap/schematics": "^2.0.0-alpha.1",
     "@popperjs/core": "^2.11.6",

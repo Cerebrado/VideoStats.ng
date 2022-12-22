@@ -121,19 +121,22 @@
       </div>        
       <div class="col-6">
         <div class="card-header input-group">
-          <span class="input-group-text input-group-prepend">Video</span>
-          <input type="text" class="form-control" [(ngModel)]="videoPath" placeholder="enter url..." />
+          <h5>YT video ID: </h5>
+          <input type="text" class="form-control ml-3" [(ngModel)]="videoId" />
           <button
           class="btn btn-outline-primary btn-sm"
           type="button"
-          (click)="loadVideo()"><span class="material-icons">visibility</span>
+          (click)="loadVideo()"><span class="material-icons">done</span>
           </button>
         </div>
           <div class="card-body">
-            <span *ngIf="!videoLoaded">
-              No video loaded
+            <span *ngIf="videoId.trim() === ''">
+              Video Id empty
             </span>
-            <video [style.display]="videoLoaded?'':'none'"
+            <span *ngIf="videoId.trim() !== '' && !videoIdValid">
+              Video Id not valid
+            </span>
+            <!-- <video [style.display]="videoLoaded?'':'none'"
               id="video"
               #videoPlayer
               style="width:100%;"
@@ -145,8 +148,14 @@
               type="video/mp4"
             />
             Your browser does not support HTML video.
-          </video>
-    
+          </video> -->
+          <youtube-player 
+          #ytPlayer
+          suggestedQuality="highres"
+          (ready)="onYTReady()"
+          (stateChange)="onYTStateChange($event)"
+          >
+          </youtube-player>
         </div>
     </div>
   </div>
