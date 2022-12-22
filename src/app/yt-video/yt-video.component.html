@@ -1,5 +1,70 @@
-<youtube-player 
-  videoId="GYAB4Td62zI" 
-  suggestedQuality="highres" 
-  >
-</youtube-player>
+<div style="position:relative; overflow: hidden;">
+  <div #divVideo style="border:2px solid green">
+    <youtube-player 
+    #ytPlayer
+    suggestedQuality="highres"
+    (ready)="onYTReady()"
+    (stateChange)="onYTStateChange($event)"
+    [videoId]="videoId"
+    [playerVars] = '{controls:0, iv_load_policy: 3, modestbranding:1, rel:0  }'
+    >
+    </youtube-player>
+  </div>
+
+  <canvas
+    [ngClass]="showDrawingPanel?'':'invisible'"
+    style="position:absolute;left:0px;top:0px;z-index: 2000;border:2px solid red" 
+    #canvas 
+    (mousemove)="mouseMove($event)"
+    (mousedown)="mouseDown($event)" 
+  ></canvas>
+</div>
+<div class="input-group">
+  <button class="btn btn-sm mx-1 shadow-none" [ngClass]="isPlaying ? 'btn-dark': 'btn-success'" (click)="playPause()"><span class="material-icons">{{isPlaying ? 'stop': 'play_arrow'}}</span> </button>
+  <input type="range" class="range" min="0" [max]="ytPlayer.getDuration()" step="0.5" [(ngModel)]="videoPlayerCurrentTime" (ngModelChange)="setCurrentTimeValue($event)">
+  <span class="input-group-text ml-1" >{{videoPlayerCurrentTime | number:'0.1-1'}} / {{ytPlayer.getDuration() | number:'0.1-1'}}</span>
+  <button class="btn btn-secondary btn-sm ml-2 mr-1 shadow-none" (click)="rewind()"><span class="material-icons">fast_rewind</span></button>
+  <select [(ngModel)]="timeToJump">
+    <option [ngValue]="0.1">0.1</option>
+    <option [ngValue]="1">1</option>
+    <option [ngValue]="5">5</option>
+    <option [ngValue]="10">10</option>
+    <option [ngValue]="20">20</option>
+    <option [ngValue]="30">30</option>
+    <option [ngValue]="60">60</option>
+  </select>
+  <button class="btn btn-secondary btn-sm mx-1 shadow-none" (click)="forward()"><span class="material-icons">fast_forward</span></button>
+
+  <div class="btn-group ml-3" role="group">
+
+    <button type="button" 
+      class="btn btn-sm data-bs-toggle shadow-none mr-1"  
+      [ngClass]="showDrawingPanel ? 'btn-dark' : 'btn-outline-dark'" 
+      (click)="setDrawingPanel()">
+      <span class="material-icons">border_color</span>
+    </button>
+
+    <div *ngIf="showDrawingPanel">
+      <button type="button" 
+        class="btn btn-sm data-bs-toggle shadow-none"  
+        [ngClass]="drawingMode === 1 ? 'btn-secondary' : 'btn-outline-secondary'" 
+        (click)="setDrawingMode(1)">
+        <span class="material-icons">gesture</span>
+      </button>
+      <button type="button" 
+        class="btn btn-sm data-bs-toggle shadow-none"
+        [ngClass]="drawingMode === 2 ? 'btn-secondary' : 'btn-outline-secondary'" 
+        (click)="setDrawingMode(2)">
+        <span class="material-icons">timeline</span>
+      </button>
+      <button type="button" 
+        class="btn btn-sm data-bs-toggle shadow-none"
+        [ngClass]="drawingMode === 3 ? 'btn-secondary' : 'btn-outline-secondary'" 
+        (click)="setDrawingMode(3)">
+        <span class="material-icons">clear_all</span>
+      </button>
+      <button class="btn btn-outline-danger btn-sm mx-1 shadow-none" (click)="clearCanvas()"><span class="material-icons">clear</span> </button>
+    </div>
+  </div>
+</div>
+

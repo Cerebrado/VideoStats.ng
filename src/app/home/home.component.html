@@ -28,11 +28,12 @@
 
 <div class="m-2" style="display:flex">
   <div class="mr-1" style="resize: horizontal; overflow: auto; width:50%;flex-shrink: 0; " id="videoDiv" #videoDiv>
-    <app-video (timeChanged)="videoTimeChanged($event)" [src]="activeMatch?.videoPath"></app-video>
-      <div class="mt-2" style="resize: horizontal; overflow: auto;width:50%;flex-grow: 1;">
-        <app-court [orientation]="'H'"></app-court>
-      </div>
-    </div>
+    <app-yt-video [videoId]="activeMatch?.videoPath"></app-yt-video>
+    <!-- <app-video (timeChanged)="videoTimeChanged($event)" [src]="activeMatch?.videoPath"></app-video> -->
+    <!-- <div class="mt-2" style="resize: horizontal; overflow: auto;width:50%;flex-grow: 1;">
+      <app-court [orientation]="'H'"></app-court>
+    </div> -->
+  </div>
 
   <div class="ml-1" style="flex-grow: 1;">
     <events-panel [activeMatch]="activeMatch" [videoTime]="videoTime" ></events-panel>

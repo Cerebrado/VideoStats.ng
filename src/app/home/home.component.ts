@@ -5,6 +5,7 @@ import { Match } from '../model/match';
 import { Player } from '../model/player';
 import { SupabaseService } from '../supabase.service';
 import { VideoComponent } from '../video/video.component';
+import { YtVideoComponent } from '../yt-video/yt-video.component';
 
 @Component({
   selector: 'app-home',
@@ -18,8 +19,8 @@ export class HomeComponent implements OnInit {
   activeId = 0
   
   
-  @ViewChild(VideoComponent, {static:true})
-  video: VideoComponent
+   @ViewChild(YtVideoComponent, {static:true})
+   video: YtVideoComponent
 
   async ngOnInit(){
     
@@ -59,7 +60,7 @@ export class HomeComponent implements OnInit {
     const config = { attributes: true, childList: true, subtree: true };
     const observer = new MutationObserver((mutation) => {
       observer.disconnect();
-      this.video.resizeVideo();
+      this.video.resizeCanvas();
       observer.observe(div, config);
     })
     observer.observe(div, config);
